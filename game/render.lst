@@ -1,0 +1,616 @@
+Microsoft (R) Macro Assembler Version 6.14.8444		    03/13/14 01:10:39
+render.asm						     Page 1 - 1
+
+
+				; #########################################################################
+				;
+				;   render.asm - Assembly file for EECS205 Assignment 4/5
+				;
+				;
+				; #########################################################################
+
+				      .586
+				      .MODEL FLAT,STDCALL
+				      .STACK 4096
+				      option casemap :none  ; case sensitive
+
+				    include stars.inc		
+			      C ; #########################################################################
+			      C ;
+			      C ;   stars.inc - Includes for EECS205 Assignment 1
+			      C ;
+			      C ;
+			      C ; #########################################################################
+			      C 
+			      C 
+			      C DrawStarReg PROTO STDCALL ; Renders a star in the 2D drawing space
+			      C                         ; Uses register passed parameters:
+			      C                         ;      esi = x-coordinate
+			      C                         ;      edi = y-coordinate
+			      C 
+			      C DrawAllStars PROTO STDCALL ; Routine which uses DrawStarReg to create all the stars
+			      C 
+			      C EXTERNDEF STDCALL WinMain : NEAR
+			      C 
+				    include blit.inc
+			      C ; #########################################################################
+			      C ;
+			      C ;   blit.inc - Includes for EECS205 Assignment 2
+			      C ;
+			      C ;
+			      C ; #########################################################################
+			      C 
+			      C 
+ 00000010		      C _EECS205BITMAP STRUCT
+ 00000000  00000000	      C  dwWidth      DWORD  ?
+ 00000004  00000000	      C  dwHeight     DWORD  ?
+ 00000008  00		      C  bTransparent BYTE   ?
+ 00000009  00000003 [	      C               BYTE   3 DUP(?)
+	    00
+	   ]
+ 0000000C  00000000	      C  lpBytes      DWORD  ?
+			      C _EECS205BITMAP ENDS
+			      C 
+			      C EECS205BITMAP TYPEDEF _EECS205BITMAP
+			      C 
+			      C EXTERNDEF StarBitmap:EECS205BITMAP
+			      C EXTERNDEF dwPitch:DWORD
+			      C EXTERNDEF lpDisplayBits:DWORD
+			      C 
+			      C 
+			      C BlitReg PROTO STDCALL   ; Renders a bitmap to the 2D drawing space
+			      C                         ; Uses register passed parameters:
+			      C                         ;      esi = x-coordinate (of image center)
+			      C                         ;      edi = y-coordinate (of image center)
+			      C 			;      edx = pointer to the bitmap to draw
+			      C 
+			      C 
+			      C 
+				    include rotate.inc	
+			      C ; #########################################################################
+			      C ;
+			      C ;   rotate.inc - Includes for EECS205 Assignment 3
+			      C ;
+			      C ;
+			      C ; #########################################################################
+			      C 
+			      C include blit.inc
+			      C ; #########################################################################
+			      C ;
+			      C ;   blit.inc - Includes for EECS205 Assignment 2
+			      C ;
+			      C ;
+			      C ; #########################################################################
+			      C 
+			      C 
+			      C _EECS205BITMAP STRUCT
+			      C  dwWidth      DWORD  ?
+			      C  dwHeight     DWORD  ?
+			      C  bTransparent BYTE   ?
+			      C               BYTE   3 DUP(?)
+			      C  lpBytes      DWORD  ?
+			      C _EECS205BITMAP ENDS
+			      C 
+			      C EECS205BITMAP TYPEDEF _EECS205BITMAP
+			      C 
+			      C EXTERNDEF StarBitmap:EECS205BITMAP
+			      C EXTERNDEF dwPitch:DWORD
+			      C EXTERNDEF lpDisplayBits:DWORD
+			      C 
+			      C 
+			      C BlitReg PROTO STDCALL   ; Renders a bitmap to the 2D drawing space
+			      C                         ; Uses register passed parameters:
+			      C                         ;      esi = x-coordinate (of image center)
+			      C                         ;      edi = y-coordinate (of image center)
+			      C 			;      edx = pointer to the bitmap to draw
+			      C 
+			      C 
+			      C 
+			      C 
+			      C BasicBlit PROTO STDCALL lpBmp:PTR EECS205BITMAP, xcenter:DWORD, ycenter:DWORD
+			      C 
+			      C RotateBlit PROTO STDCALL lpBmp:PTR EECS205BITMAP, xcenter:DWORD, ycenter:DWORD, angle:DWORD
+			      C 
+			      C FixedMul PROTO STDCALL x:DWORD, y:DWORD
+			      C 
+			      C 
+			      C 
+				    include game.inc
+			      C ; #########################################################################
+			      C ;
+			      C ;   game.inc - Includes for EECS205 Assignment 4/5
+			      C ;
+			      C ;
+			      C ; #########################################################################
+			      C 
+			      C ;; These are library routines that you will call (but do NOT have to implement)
+			      C BeginDraw PROTO
+			      C EndDraw PROTO
+			      C 
+			      C ;; You should not need to modify these prototypes (actually, it would probably be bad)
+			      C GameInit PROTO
+			      C GameMain PROTO mouseStatus:DWORD, keyDown:DWORD, keyUp:DWORD
+			      C 
+			      C ;; Useful Library Routines
+			      C DrawString PROTO x:DWORD, y:DWORD, string:PTR BYTE 
+			      C DrawInt PROTO x:DWORD, y:DWORD, value:DWORD
+			      C 
+			      C ;; Feel free to modify the following
+			      C GameRender PROTO
+			      C GameLogic PROTO xinc:DWORD, yinc:DWORD
+			      C RandomNum PROTO
+			      C CollisionCheck PROTO obj1:PTR Sprite, obj2:PTR Sprite, tol:DWORD
+			      C levelShift PROTO
+			      C 
+			      C EXTERNDEF lpTyroneBmp:DWORD
+			      C 
+ 00000024		      C Sprite STRUCT
+ 00000000  00000000	      C 	xPos DWORD ?
+ 00000004  00000000	      C 	yPos DWORD ?
+ 00000008  00000000	      C 	xPosFixed DWORD ?
+ 0000000C  00000000	      C 	yPosFixed	DWORD ?
+ 00000010  00000000	      C 	xVel DWORD ?
+ 00000014  00000000	      C 	yVel DWORD ?
+ 00000018  00000000	      C 	angle DWORD ?
+ 0000001C  00000000	      C 	visible DWORD ?
+ 00000020  00000000	      C         hp DWORD ?
+			      C Sprite ENDS
+			      C EXTERNDEF hpcost: DWORD
+			      C EXTERNDEF dmgcost: DWORD
+			      C EXTERNDEF spdcost: DWORD
+			      C EXTERNDEF upgradecount:DWORD
+			      C EXTERNDEF points:DWORD
+			      C EXTERNDEF level:Dword
+			      C EXTERNDEF mouseX:DWORD
+			      C EXTERNDEF mouseY:DWORD
+			      C EXTERNDEF BIRD: EECS205BITMAP
+			      C EXTERNDEF bird: Sprite
+			      C EXTERNDEF PIPE: EECS205BITMAP
+			      C EXTERNDEF pipe: Sprite
+			      C EXTERNDEF DOWNPIPE: EECS205BITMAP
+			      C EXTERNDEF downPipe: Sprite
+			      C EXTERNDEF poke: Sprite
+			      C EXTERNDEF POKE: EECS205BITMAP
+			      C EXTERNDEF abby: Sprite
+			      C EXTERNDEF ABBY: EECS205BITMAP
+			      C EXTERNDEF aa_j: EECS205BITMAP
+			      C EXTERNDEF zapdos: Sprite
+			      C EXTERNDEF atv: EECS205BITMAP
+			      C EXTERNDEF venomoth: Sprite
+			      C EXTERNDEF baby_helix: EECS205BITMAP
+			      C EXTERNDEF omanyte: Sprite
+			      C EXTERNDEF lord_helix: EECS205BITMAP
+			      C EXTERNDEF omastar: Sprite
+			      C EXTERNDEF ELECTRODE: EECS205BITMAP
+			      C EXTERNDEF electrode: Sprite
+			      C EXTERNDEF currHP: DWORD
+			      C EXTERNDEF pause: DWORD
+			      C EXTERNDEF gravity: DWORD
+			      C 
+				    include trig.inc
+			      C ; #########################################################################
+			      C ;
+			      C ;   trig.inc - Includes for EECS205 Assignment 3
+			      C ;
+			      C ;
+			      C ; #########################################################################
+			      C 
+			      C ;; FIXED is a fixed point number (16 bit integer and 16 bit fractional components)
+			      C ;;    To convert a FIXED value in eax into an integer:  sar eax, 16
+			      C ;;    To convert an integer value in eax into a FIXED:  shl eax, 16
+			      C FIXED TYPEDEF DWORD
+			      C 
+			      C EXTERNDEF SINTAB:WORD 
+			      C 
+			      C FixedSin PROTO STDCALL dwAngle:FIXED 
+			      C FixedCos PROTO STDCALL dwAngle:FIXED
+			      C 
+			      C 
+			      C 
+			      C 
+			      C 
+					
+ 00000000			.DATA
+
+ 00000000 45 6E 65 6D 79	hpline BYTE "Enemy HP:",0
+	   20 48 50 3A 00
+ 0000000A 42 69 72 64 20	birdhpline BYTE "Bird HP:",0
+	   48 50 3A 00
+ 00000013 50 6F 69 6E 74	pointsline BYTE "Points:", 0
+	   73 3A 00
+ 0000001B 50 41 55 53 45	pausescreen0 BYTE "PAUSED",0
+	   44 00
+ 00000022 55 50 47 52 41	pausescreen1 BYTE "UPGRADES:        COST:         CURRENT:     BUY WITH:",0
+	   44 45 53 3A 20
+	   20 20 20 20 20
+	   20 20 43 4F 53
+	   54 3A 20 20 20
+	   20 20 20 20 20
+	   20 43 55 52 52
+	   45 4E 54 3A 20
+	   20 20 20 20 42
+	   55 59 20 57 49
+	   54 48 3A 00
+ 00000058 48 50 00		pausescreen2 BYTE "HP",0
+ 0000005B 44 41 4D 41 47	pausescreen3 BYTE "DAMAGE",0
+	   45 00
+ 00000062 50 52 4F 4A 45	pausescreen4 BYTE "PROJECTILE",0
+	   43 54 49 4C 45
+	   00
+ 0000006D 53 50 45 45 44	pausescreen5 BYTE "SPEED",0
+	   00
+ 00000073 50 52 45 53 53	directions1 BYTE "PRESS SPACE TO FLAP AND CLICK TO FIRE",0
+	   20 53 50 41 43
+	   45 20 54 4F 20
+	   46 4C 41 50 20
+	   41 4E 44 20 43
+	   4C 49 43 4B 20
+	   54 4F 20 46 49
+	   52 45 00
+ 00000099 50 52 45 53 53	directions2 BYTE "PRESS Z KEY TO PAUSE AND SHOP",0 
+	   20 5A 20 4B 45
+	   59 20 54 4F 20
+	   50 41 55 53 45
+	   20 41 4E 44 20
+	   53 48 4F 50 00
+ 000000B7 00000064		hpcost DWORD 100
+ 000000BB 00000064		dmgcost DWORD 100
+ 000000BF 00000064		spdcost DWORD 100
+ 000000C3 45 00			spdkey BYTE "E",0
+ 000000C5 51 00			hpkey BYTE "Q",0
+ 000000C7 57 00			dmgkey BYTE "W",0
+ 000000C9 43 4F 4E 47 52	youwin BYTE "CONGRATULATIONS, YOU'VE BEATEN LORD HELIX AND WON THE GAME!",0
+	   41 54 55 4C 41
+	   54 49 4F 4E 53
+	   2C 20 59 4F 55
+	   27 56 45 20 42
+	   45 41 54 45 4E
+	   20 4C 4F 52 44
+	   20 48 45 4C 49
+	   58 20 41 4E 44
+	   20 57 4F 4E 20
+	   54 48 45 20 47
+	   41 4D 45 21 00
+
+ 00000105 00000000		enemyPic DWORD ?
+
+ 00000000			.CODE
+
+				;; Define the function GameRender
+				;; Since we have thoroughly covered defining functions in class, its up to you from here on out...
+ 00000000			GameRender PROC
+				INVOKE BeginDraw
+				INVOKE DrawAllStars
+				INVOKE DrawString, 450, 0, ADDR hpline
+				invoke DrawString, 0, 0, ADDR birdhpline
+				invoke DrawString, 0, 25, ADDR pointsline
+				invoke DrawString, 200, 400, ADDR directions1
+				invoke DrawString, 200, 420, ADDR directions2
+				invoke DrawInt, 75, 25, points
+
+ 0000006E  83 3D 00000000 E	cmp pause, 1
+	   01
+ 00000075  0F 85 0000012F	jne sprites
+
+				INVOKE DrawString, 275, 100, ADDR pausescreen0
+				INVOKE DrawString, 150, 150, ADDR pausescreen1
+				INVOKE DrawString, 150, 200, ADDR pausescreen2
+				INVOKE DrawString, 150, 250, ADDR pausescreen3
+				INVOKE DrawString, 150, 300, ADDR pausescreen4
+				INVOKE DrawString, 150, 315, ADDR pausescreen5
+
+				INVOKE DrawInt, 275, 200, hpcost
+				INVOKE DrawInt, 275, 250, dmgcost
+				INVOKE DrawInt, 275, 300, spdcost
+
+				INVOKE DrawInt, 400, 200, bird.hp
+				INVOKE DrawInt, 400, 250, poke.hp
+				INVOKE DrawInt, 400, 300, poke.xVel
+
+				INVOKE DrawString, 500, 200, ADDR hpkey
+				INVOKE DrawString, 500, 250, ADDR dmgkey
+				INVOKE DrawString, 500, 300, ADDR spdkey
+
+
+
+ 000001AA			sprites:
+ 000001AA  83 3D 0000001C E	cmp bird.visible, 0
+	   00
+ 000001B1  75 3F		jne nobird
+				INVOKE DrawInt, 100, 0, bird.hp
+ 000001C2  8B 1D 00000008 E	mov ebx, bird.xPosFixed
+ 000001C8  8B 0D 0000000C E	mov ecx, bird.yPosFixed
+ 000001CE  C1 FB 10		sar ebx, 16
+ 000001D1  C1 F9 10		sar ecx, 16
+ 000001D4  89 1D 00000000 E	mov bird.xPos, ebx
+ 000001DA  89 0D 00000004 E	mov bird.yPos, ecx
+				INVOKE RotateBlit, ADDR BIRD, ebx, ecx, bird.angle
+ 000001F2			nobird:
+
+ 000001F2  83 3D 0000001C E	cmp pipe.visible, 0
+	   00
+ 000001F9  75 30		jne noPipe
+ 000001FB  8B 1D 00000008 E	mov ebx, pipe.xPosFixed
+ 00000201  8B 0D 0000000C E	mov ecx, pipe.yPosFixed
+ 00000207  C1 FB 10		sar ebx, 16
+ 0000020A  C1 F9 10		sar ecx, 16
+ 0000020D  89 1D 00000000 E	mov pipe.xPos, ebx
+ 00000213  89 0D 00000004 E	mov pipe.yPos, ecx
+				INVOKE RotateBlit, ADDR PIPE, ebx, ecx, pipe.angle
+ 0000022B			noPipe:
+				 
+ 0000022B  83 3D 0000001C E	cmp downPipe.visible, 0
+	   00
+ 00000232  75 30		jne nodownPipe
+ 00000234  8B 1D 00000008 E	mov ebx, downPipe.xPosFixed
+ 0000023A  8B 0D 0000000C E	mov ecx, downPipe.yPosFixed
+ 00000240  C1 FB 10		sar ebx, 16
+ 00000243  C1 F9 10		sar ecx, 16
+ 00000246  89 1D 00000000 E	mov downPipe.xPos, ebx
+ 0000024C  89 0D 00000004 E	mov downPipe.yPos, ecx
+				INVOKE RotateBlit, ADDR DOWNPIPE, ebx, ecx, downPipe.angle
+ 00000264			nodownPipe:
+
+ 00000264  83 3D 0000001C E	cmp poke.visible, 0
+	   00
+ 0000026B  75 30		jne noPoke
+ 0000026D  8B 1D 00000008 E	mov ebx, poke.xPosFixed
+ 00000273  8B 0D 0000000C E	mov ecx, poke.yPosFixed
+ 00000279  C1 FB 10		sar ebx, 16
+ 0000027C  C1 F9 10		sar ecx, 16
+ 0000027F  89 1D 00000000 E	mov poke.xPos, ebx
+ 00000285  89 0D 00000004 E	mov poke.yPos, ecx
+				INVOKE RotateBlit, OFFSET POKE, ebx, ecx, poke.angle
+ 0000029D			noPoke:
+
+
+ 0000029D  83 3D 0000001C E	cmp abby.visible, 0
+	   00
+ 000002A4  75 42		jne noabby
+				INVOKE DrawInt, 550, 0, currHP
+ 000002B8  8B 1D 00000008 E	mov ebx, abby.xPosFixed
+ 000002BE  8B 0D 0000000C E	mov ecx, abby.yPosFixed
+ 000002C4  C1 FB 10		sar ebx, 16
+ 000002C7  C1 F9 10		sar ecx, 16
+ 000002CA  89 1D 00000000 E	mov abby.xPos, ebx
+ 000002D0  89 0D 00000004 E	mov abby.yPos, ecx
+				INVOKE RotateBlit, OFFSET ABBY, ebx, ecx, abby.angle
+ 000002E8			noabby:
+
+ 000002E8  83 3D 0000001C E	cmp zapdos.visible, 0
+	   00
+ 000002EF  75 42		jne nozapdos
+				INVOKE DrawInt, 550, 0, currHP
+
+ 00000303  8B 1D 00000008 E	mov ebx, zapdos.xPosFixed
+ 00000309  8B 0D 0000000C E	mov ecx, zapdos.yPosFixed
+ 0000030F  C1 FB 10		sar ebx, 16
+ 00000312  C1 F9 10		sar ecx, 16
+ 00000315  89 1D 00000000 E	mov zapdos.xPos, ebx
+ 0000031B  89 0D 00000004 E	mov zapdos.yPos, ecx
+				INVOKE RotateBlit, OFFSET aa_j, ebx, ecx, zapdos.angle
+ 00000333			nozapdos:
+
+ 00000333  83 3D 0000001C E	cmp venomoth.visible, 0
+	   00
+ 0000033A  75 42		jne novenomoth
+				INVOKE DrawInt, 550, 0, currHP
+
+ 0000034E  8B 1D 00000008 E	mov ebx, venomoth.xPosFixed
+ 00000354  8B 0D 0000000C E	mov ecx, venomoth.yPosFixed
+ 0000035A  C1 FB 10		sar ebx, 16
+ 0000035D  C1 F9 10		sar ecx, 16
+ 00000360  89 1D 00000000 E	mov venomoth.xPos, ebx
+ 00000366  89 0D 00000004 E	mov venomoth.yPos, ecx
+				INVOKE RotateBlit, OFFSET atv, ebx, ecx, venomoth.angle
+ 0000037E			novenomoth:
+
+ 0000037E  83 3D 0000001C E	cmp omanyte.visible, 0
+	   00
+ 00000385  75 42		jne noomanyte
+				INVOKE DrawInt, 550, 0, currHP
+
+ 00000399  8B 1D 00000008 E	mov ebx, omanyte.xPosFixed
+ 0000039F  8B 0D 0000000C E	mov ecx, omanyte.yPosFixed
+ 000003A5  C1 FB 10		sar ebx, 16
+ 000003A8  C1 F9 10		sar ecx, 16
+ 000003AB  89 1D 00000000 E	mov omanyte.xPos, ebx
+ 000003B1  89 0D 00000004 E	mov omanyte.yPos, ecx
+				INVOKE RotateBlit, OFFSET baby_helix, ebx, ecx, omanyte.angle
+ 000003C9			noomanyte:
+
+ 000003C9  83 3D 0000001C E	cmp omastar.visible, 0
+	   00
+ 000003D0  75 42		jne noomastar
+				INVOKE DrawInt, 550, 0, currHP
+
+ 000003E4  8B 1D 00000008 E	mov ebx, omastar.xPosFixed
+ 000003EA  8B 0D 0000000C E	mov ecx, omastar.yPosFixed
+ 000003F0  C1 FB 10		sar ebx, 16
+ 000003F3  C1 F9 10		sar ecx, 16
+ 000003F6  89 1D 00000000 E	mov omastar.xPos, ebx
+ 000003FC  89 0D 00000004 E	mov omastar.yPos, ecx
+				INVOKE RotateBlit, OFFSET lord_helix, ebx, ecx, omastar.angle
+ 00000414			noomastar:
+
+
+ 00000414  83 3D 0000001C E	cmp electrode.visible, 0
+	   00
+ 0000041B  75 30		jne noElectrode
+ 0000041D  8B 1D 00000008 E	mov ebx, electrode.xPosFixed
+ 00000423  8B 0D 0000000C E	mov ecx, electrode.yPosFixed
+ 00000429  C1 FB 10		sar ebx, 16
+ 0000042C  C1 F9 10		sar ecx, 16
+ 0000042F  89 1D 00000000 E	mov electrode.xPos, ebx
+ 00000435  89 0D 00000004 E	mov electrode.yPos, ecx
+				INVOKE RotateBlit, ADDR ELECTRODE, ebx, ecx, electrode.angle
+ 0000044D			noElectrode:
+
+ 0000044D  83 3D 00000000 E	cmp level, 6
+	   06
+ 00000454  7C 11		jl enddraw
+
+				INVOKE DrawString, 0, 200, ADDR youwin
+
+ 00000467			enddraw:
+				INVOKE EndDraw
+
+
+
+
+ 0000046C  C3			ret
+
+ 0000046D			GameRender ENDP
+				END
+Microsoft (R) Macro Assembler Version 6.14.8444		    03/13/14 01:10:39
+render.asm						     Symbols 2 - 1
+
+
+
+
+Structures and Unions:
+
+                N a m e                  Size
+                                         Offset      Type
+
+Sprite . . . . . . . . . . . . .	 00000024
+  xPos . . . . . . . . . . . . .	 00000000	 DWord
+  yPos . . . . . . . . . . . . .	 00000004	 DWord
+  xPosFixed  . . . . . . . . . .	 00000008	 DWord
+  yPosFixed  . . . . . . . . . .	 0000000C	 DWord
+  xVel . . . . . . . . . . . . .	 00000010	 DWord
+  yVel . . . . . . . . . . . . .	 00000014	 DWord
+  angle  . . . . . . . . . . . .	 00000018	 DWord
+  visible  . . . . . . . . . . .	 0000001C	 DWord
+  hp . . . . . . . . . . . . . .	 00000020	 DWord
+_EECS205BITMAP . . . . . . . . .	 00000010
+  dwWidth  . . . . . . . . . . .	 00000000	 DWord
+  dwHeight . . . . . . . . . . .	 00000004	 DWord
+  bTransparent . . . . . . . . .	 00000008	 Byte
+  lpBytes  . . . . . . . . . . .	 0000000C	 DWord
+
+
+Types:
+
+                N a m e                  Size     Attr
+
+EECS205BITMAP  . . . . . . . . .	 00000010     _EECS205BITMAP 
+FIXED  . . . . . . . . . . . . .	 00000004     DWord 
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+FLAT . . . . . . . . . . . . . .	GROUP
+STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
+_DATA  . . . . . . . . . . . . .	32 Bit	 00000109 Para	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 0000046D Para	  Public  'CODE'	
+
+
+Procedures,  parameters and locals:
+
+                N a m e                 Type     Value    Attr
+
+BasicBlit  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+BeginDraw  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+BlitReg  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+CollisionCheck . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+DrawAllStars . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+DrawInt  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+DrawStarReg  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+DrawString . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+EndDraw  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+FixedCos . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+FixedMul . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+FixedSin . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GameInit . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GameLogic  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GameMain . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GameRender . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 0000046D Public STDCALL
+  sprites  . . . . . . . . . . .	L Near	 000001AA _TEXT	
+  nobird . . . . . . . . . . . .	L Near	 000001F2 _TEXT	
+  noPipe . . . . . . . . . . . .	L Near	 0000022B _TEXT	
+  nodownPipe . . . . . . . . . .	L Near	 00000264 _TEXT	
+  noPoke . . . . . . . . . . . .	L Near	 0000029D _TEXT	
+  noabby . . . . . . . . . . . .	L Near	 000002E8 _TEXT	
+  nozapdos . . . . . . . . . . .	L Near	 00000333 _TEXT	
+  novenomoth . . . . . . . . . .	L Near	 0000037E _TEXT	
+  noomanyte  . . . . . . . . . .	L Near	 000003C9 _TEXT	
+  noomastar  . . . . . . . . . .	L Near	 00000414 _TEXT	
+  noElectrode  . . . . . . . . .	L Near	 0000044D _TEXT	
+  enddraw  . . . . . . . . . . .	L Near	 00000467 _TEXT	
+RandomNum  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+RotateBlit . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+levelShift . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+@CodeSize  . . . . . . . . . . .	Number	 00000000h   
+@DataSize  . . . . . . . . . . .	Number	 00000000h   
+@Interface . . . . . . . . . . .	Number	 00000003h   
+@Model . . . . . . . . . . . . .	Number	 00000007h   
+@code  . . . . . . . . . . . . .	Text   	 _TEXT
+@data  . . . . . . . . . . . . .	Text   	 FLAT
+@fardata?  . . . . . . . . . . .	Text   	 FLAT
+@fardata . . . . . . . . . . . .	Text   	 FLAT
+@stack . . . . . . . . . . . . .	Text   	 FLAT
+ABBY . . . . . . . . . . . . . .	_EECS205BITMAP  00000000 FLAT	External STDCALL
+BIRD . . . . . . . . . . . . . .	_EECS205BITMAP  00000000 FLAT	External STDCALL
+DOWNPIPE . . . . . . . . . . . .	_EECS205BITMAP  00000000 FLAT	External STDCALL
+ELECTRODE  . . . . . . . . . . .	_EECS205BITMAP  00000000 FLAT	External STDCALL
+PIPE . . . . . . . . . . . . . .	_EECS205BITMAP  00000000 FLAT	External STDCALL
+POKE . . . . . . . . . . . . . .	_EECS205BITMAP  00000000 FLAT	External STDCALL
+SINTAB . . . . . . . . . . . . .	Word	 00000000 FLAT	External STDCALL
+StarBitmap . . . . . . . . . . .	_EECS205BITMAP  00000000 FLAT	External STDCALL
+WinMain  . . . . . . . . . . . .	L Near	 00000000 FLAT	External STDCALL
+aa_j . . . . . . . . . . . . . .	_EECS205BITMAP  00000000 FLAT	External STDCALL
+abby . . . . . . . . . . . . . .	Sprite	 00000000 FLAT	External STDCALL
+atv  . . . . . . . . . . . . . .	_EECS205BITMAP  00000000 FLAT	External STDCALL
+baby_helix . . . . . . . . . . .	_EECS205BITMAP  00000000 FLAT	External STDCALL
+birdhpline . . . . . . . . . . .	Byte	 0000000A _DATA	
+bird . . . . . . . . . . . . . .	Sprite	 00000000 FLAT	External STDCALL
+currHP . . . . . . . . . . . . .	DWord	 00000000 FLAT	External STDCALL
+directions1  . . . . . . . . . .	Byte	 00000073 _DATA	
+directions2  . . . . . . . . . .	Byte	 00000099 _DATA	
+dmgcost  . . . . . . . . . . . .	DWord	 000000BB _DATA	Public STDCALL
+dmgkey . . . . . . . . . . . . .	Byte	 000000C7 _DATA	
+downPipe . . . . . . . . . . . .	Sprite	 00000000 FLAT	External STDCALL
+dwPitch  . . . . . . . . . . . .	DWord	 00000000 FLAT	External STDCALL
+electrode  . . . . . . . . . . .	Sprite	 00000000 FLAT	External STDCALL
+enemyPic . . . . . . . . . . . .	DWord	 00000105 _DATA	
+gravity  . . . . . . . . . . . .	DWord	 00000000 FLAT	External STDCALL
+hpcost . . . . . . . . . . . . .	DWord	 000000B7 _DATA	Public STDCALL
+hpkey  . . . . . . . . . . . . .	Byte	 000000C5 _DATA	
+hpline . . . . . . . . . . . . .	Byte	 00000000 _DATA	
+level  . . . . . . . . . . . . .	DWord	 00000000 FLAT	External STDCALL
+lord_helix . . . . . . . . . . .	_EECS205BITMAP  00000000 FLAT	External STDCALL
+lpDisplayBits  . . . . . . . . .	DWord	 00000000 FLAT	External STDCALL
+lpTyroneBmp  . . . . . . . . . .	DWord	 00000000 FLAT	External STDCALL
+mouseX . . . . . . . . . . . . .	DWord	 00000000 FLAT	External STDCALL
+mouseY . . . . . . . . . . . . .	DWord	 00000000 FLAT	External STDCALL
+omanyte  . . . . . . . . . . . .	Sprite	 00000000 FLAT	External STDCALL
+omastar  . . . . . . . . . . . .	Sprite	 00000000 FLAT	External STDCALL
+pausescreen0 . . . . . . . . . .	Byte	 0000001B _DATA	
+pausescreen1 . . . . . . . . . .	Byte	 00000022 _DATA	
+pausescreen2 . . . . . . . . . .	Byte	 00000058 _DATA	
+pausescreen3 . . . . . . . . . .	Byte	 0000005B _DATA	
+pausescreen4 . . . . . . . . . .	Byte	 00000062 _DATA	
+pausescreen5 . . . . . . . . . .	Byte	 0000006D _DATA	
+pause  . . . . . . . . . . . . .	DWord	 00000000 FLAT	External STDCALL
+pipe . . . . . . . . . . . . . .	Sprite	 00000000 FLAT	External STDCALL
+pointsline . . . . . . . . . . .	Byte	 00000013 _DATA	
+points . . . . . . . . . . . . .	DWord	 00000000 FLAT	External STDCALL
+poke . . . . . . . . . . . . . .	Sprite	 00000000 FLAT	External STDCALL
+spdcost  . . . . . . . . . . . .	DWord	 000000BF _DATA	Public STDCALL
+spdkey . . . . . . . . . . . . .	Byte	 000000C3 _DATA	
+upgradecount . . . . . . . . . .	DWord	 00000000 FLAT	External STDCALL
+venomoth . . . . . . . . . . . .	Sprite	 00000000 FLAT	External STDCALL
+youwin . . . . . . . . . . . . .	Byte	 000000C9 _DATA	
+zapdos . . . . . . . . . . . . .	Sprite	 00000000 FLAT	External STDCALL
+
+	   0 Warnings
+	   0 Errors

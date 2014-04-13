@@ -1,0 +1,1402 @@
+Microsoft (R) Macro Assembler Version 6.14.8444		    03/13/14 01:10:39
+stars.asm						     Page 1 - 1
+
+
+				; #########################################################################
+				;
+				;   stars.asm - Assembly file for EECS205 Assignment 1
+				;
+				;
+				; #########################################################################
+
+				      .586
+				      .MODEL FLAT,STDCALL
+				      .STACK 4096
+				      option casemap :none  ; case sensitive
+
+				    include stars.inc
+			      C ; #########################################################################
+			      C ;
+			      C ;   stars.inc - Includes for EECS205 Assignment 1
+			      C ;
+			      C ;
+			      C ; #########################################################################
+			      C 
+			      C 
+			      C DrawStarReg PROTO STDCALL ; Renders a star in the 2D drawing space
+			      C                         ; Uses register passed parameters:
+			      C                         ;      esi = x-coordinate
+			      C                         ;      edi = y-coordinate
+			      C 
+			      C DrawAllStars PROTO STDCALL ; Routine which uses DrawStarReg to create all the stars
+			      C 
+			      C EXTERNDEF STDCALL WinMain : NEAR
+			      C 
+
+ 00000000			.CODE
+
+				; Routine which uses DrawStarReg to create all the stars
+ 00000000			DrawAllStars PROC 
+
+				    ;; Place your code here
+				    ;; antennae
+ 00000000  BE 00000064		    mov esi, 100
+ 00000005  BF 00000064		    mov edi, 100
+ 0000000A  E8 00000000 E	    call DrawStarReg
+
+ 0000000F  BE 00000065		    mov esi, 101
+ 00000014  BF 00000065		    mov edi, 101
+ 00000019  E8 00000000 E	    call DrawStarReg
+				    
+ 0000001E  BE 00000069		    mov esi, 105    
+ 00000023  BF 00000065		    mov edi, 101
+ 00000028  E8 00000000 E	    call DrawStarReg
+
+ 0000002D  BE 0000006A		    mov esi, 106
+ 00000032  BF 00000064		    mov edi, 100
+ 00000037  E8 00000000 E	    call DrawStarReg
+
+				    ;;head
+ 0000003C  BE 00000064		    mov esi, 100
+ 00000041  BF 00000066		    mov edi, 102
+ 00000046  E8 00000000 E	    call DrawStarReg
+
+ 0000004B  BE 00000065		    mov esi, 101
+ 00000050  BF 00000066		    mov edi, 102
+ 00000055  E8 00000000 E	    call DrawStarReg
+
+ 0000005A  BE 00000066		    mov esi, 102
+ 0000005F  BF 00000066		    mov edi, 102
+ 00000064  E8 00000000 E	    call DrawStarReg
+
+ 00000069  BE 00000067		    mov esi, 103
+ 0000006E  BF 00000066		    mov edi, 102
+ 00000073  E8 00000000 E	    call DrawStarReg
+
+ 00000078  BE 00000068		    mov esi, 104
+ 0000007D  BF 00000066		    mov edi, 102
+ 00000082  E8 00000000 E	    call DrawStarReg
+
+ 00000087  BE 00000069		    mov esi, 105
+ 0000008C  BF 00000066		    mov edi, 102
+ 00000091  E8 00000000 E	    call DrawStarReg
+
+ 00000096  BE 0000006A		    mov esi, 106
+ 0000009B  BF 00000066		    mov edi, 102
+ 000000A0  E8 00000000 E	    call DrawStarReg
+
+ 000000A5  BE 00000063		    mov esi, 99 
+ 000000AA  BF 00000067		    mov edi, 103
+ 000000AF  E8 00000000 E	    call DrawStarReg
+
+ 000000B4  BE 00000064		    mov esi, 100
+ 000000B9  BF 00000067		    mov edi, 103
+ 000000BE  E8 00000000 E	    call DrawStarReg
+
+ 000000C3  BE 00000066		    mov esi, 102
+ 000000C8  BF 00000067		    mov edi, 103
+ 000000CD  E8 00000000 E	    call DrawStarReg
+
+ 000000D2  BE 00000067		    mov esi, 103
+ 000000D7  BF 00000067		    mov edi, 103
+ 000000DC  E8 00000000 E	    call DrawStarReg
+
+ 000000E1  BE 00000068		    mov esi, 104
+ 000000E6  BF 00000067		    mov edi, 103
+ 000000EB  E8 00000000 E	    call DrawStarReg
+
+ 000000F0  BE 0000006A		    mov esi, 106
+ 000000F5  BF 00000067		    mov edi, 103
+ 000000FA  E8 00000000 E	    call DrawStarReg
+
+ 000000FF  BE 0000006B		    mov esi, 107
+ 00000104  BF 00000067		    mov edi, 103
+ 00000109  E8 00000000 E	    call DrawStarReg
+
+ 0000010E  BE 00000062		    mov esi, 98
+ 00000113  BF 00000068		    mov edi, 104
+ 00000118  E8 00000000 E	    call DrawStarReg
+
+ 0000011D  BE 00000063		    mov esi, 99
+ 00000122  BF 00000068		    mov edi, 104
+ 00000127  E8 00000000 E	    call DrawStarReg
+
+ 0000012C  BE 00000064		    mov esi, 100
+ 00000131  BF 00000068		    mov edi, 104
+ 00000136  E8 00000000 E	    call DrawStarReg
+
+ 0000013B  BE 00000065		    mov esi, 101
+ 00000140  BF 00000068		    mov edi, 104
+ 00000145  E8 00000000 E	    call DrawStarReg
+
+ 0000014A  BE 00000066		    mov esi, 102
+ 0000014F  BF 00000068		    mov edi, 104
+ 00000154  E8 00000000 E	    call DrawStarReg
+
+ 00000159  BE 00000067		    mov esi, 103
+ 0000015E  BF 00000068		    mov edi, 104
+ 00000163  E8 00000000 E	    call DrawStarReg
+
+ 00000168  BE 00000068		    mov esi, 104
+ 0000016D  BF 00000068		    mov edi, 104
+ 00000172  E8 00000000 E	    call DrawStarReg
+
+ 00000177  BE 00000069		    mov esi, 105
+ 0000017C  BF 00000068		    mov edi, 104
+ 00000181  E8 00000000 E	    call DrawStarReg
+
+ 00000186  BE 0000006A		    mov esi, 106
+ 0000018B  BF 00000068		    mov edi, 104
+ 00000190  E8 00000000 E	    call DrawStarReg
+
+ 00000195  BE 0000006B		    mov esi, 107
+ 0000019A  BF 00000068		    mov edi, 104
+ 0000019F  E8 00000000 E	    call DrawStarReg
+
+ 000001A4  BE 0000006C		    mov esi, 108
+ 000001A9  BF 00000068		    mov edi, 104
+ 000001AE  E8 00000000 E	    call DrawStarReg
+
+ 000001B3  BE 00000062		    mov esi, 98
+ 000001B8  BF 00000069		    mov edi, 105
+ 000001BD  E8 00000000 E	    call DrawStarReg  
+
+ 000001C2  BE 00000064		    mov esi, 100
+ 000001C7  BF 00000069		    mov edi, 105
+ 000001CC  E8 00000000 E	    call DrawStarReg 
+
+ 000001D1  BE 00000065		    mov esi, 101
+ 000001D6  BF 00000069		    mov edi, 105
+ 000001DB  E8 00000000 E	    call DrawStarReg 
+
+ 000001E0  BE 00000066		    mov esi, 102
+ 000001E5  BF 00000069		    mov edi, 105
+ 000001EA  E8 00000000 E	    call DrawStarReg 
+
+ 000001EF  BE 00000067		    mov esi, 103
+ 000001F4  BF 00000069		    mov edi, 105
+ 000001F9  E8 00000000 E	    call DrawStarReg 
+
+ 000001FE  BE 00000068		    mov esi, 104
+ 00000203  BF 00000069		    mov edi, 105
+ 00000208  E8 00000000 E	    call DrawStarReg 
+
+ 0000020D  BE 00000069		    mov esi, 105
+ 00000212  BF 00000069		    mov edi, 105
+ 00000217  E8 00000000 E	    call DrawStarReg 
+
+ 0000021C  BE 0000006A		    mov esi, 106
+ 00000221  BF 00000069		    mov edi, 105
+ 00000226  E8 00000000 E	    call DrawStarReg 
+
+ 0000022B  BE 0000006C		    mov esi, 108
+ 00000230  BF 00000069		    mov edi, 105
+ 00000235  E8 00000000 E	    call DrawStarReg
+
+ 0000023A  BE 00000062		    mov esi, 98
+ 0000023F  BF 0000006A		    mov edi, 106
+ 00000244  E8 00000000 E	    call DrawStarReg 
+
+ 00000249  BE 00000064		    mov esi, 100
+ 0000024E  BF 0000006A		    mov edi, 106
+ 00000253  E8 00000000 E	    call DrawStarReg 
+
+ 00000258  BE 0000006A		    mov esi, 106
+ 0000025D  BF 0000006A		    mov edi, 106
+ 00000262  E8 00000000 E	    call DrawStarReg 
+
+ 00000267  BE 0000006C		    mov esi, 108
+ 0000026C  BF 0000006A		    mov edi, 106
+ 00000271  E8 00000000 E	    call DrawStarReg    
+
+ 00000276  BE 00000065		    mov esi, 101
+ 0000027B  BF 0000006B		    mov edi, 107
+ 00000280  E8 00000000 E	    call DrawStarReg 
+
+ 00000285  BE 00000066		    mov esi, 102
+ 0000028A  BF 0000006B		    mov edi, 107
+ 0000028F  E8 00000000 E	    call DrawStarReg 
+
+ 00000294  BE 00000068		    mov esi, 104
+ 00000299  BF 0000006B		    mov edi, 107
+ 0000029E  E8 00000000 E	    call DrawStarReg 
+
+ 000002A3  BE 00000069		    mov esi, 105
+ 000002A8  BF 0000006B		    mov edi, 107
+ 000002AD  E8 00000000 E	    call DrawStarReg
+
+				    ;; invader 2
+				    ;; antennae
+ 000002B2  BE 000000C8		    mov esi, 200
+ 000002B7  BF 00000064		    mov edi, 100
+ 000002BC  E8 00000000 E	    call DrawStarReg
+
+ 000002C1  BE 000000C9		    mov esi, 201
+ 000002C6  BF 00000065		    mov edi, 101
+ 000002CB  E8 00000000 E	    call DrawStarReg
+				    
+ 000002D0  BE 000000CD		    mov esi, 205    
+ 000002D5  BF 00000065		    mov edi, 101
+ 000002DA  E8 00000000 E	    call DrawStarReg
+
+ 000002DF  BE 000000CE		    mov esi, 206
+ 000002E4  BF 00000064		    mov edi, 100
+ 000002E9  E8 00000000 E	    call DrawStarReg
+
+				    ;; top of head
+ 000002EE  BE 000000C8		    mov esi, 200
+ 000002F3  BF 00000066		    mov edi, 102
+ 000002F8  E8 00000000 E	    call DrawStarReg
+
+ 000002FD  BE 000000C9		    mov esi, 201
+ 00000302  BF 00000066		    mov edi, 102
+ 00000307  E8 00000000 E	    call DrawStarReg
+
+ 0000030C  BE 000000CA		    mov esi, 202
+ 00000311  BF 00000066		    mov edi, 102
+ 00000316  E8 00000000 E	    call DrawStarReg
+
+ 0000031B  BE 000000CB		    mov esi, 203
+ 00000320  BF 00000066		    mov edi, 102
+ 00000325  E8 00000000 E	    call DrawStarReg
+
+ 0000032A  BE 000000CC		    mov esi, 204
+ 0000032F  BF 00000066		    mov edi, 102
+ 00000334  E8 00000000 E	    call DrawStarReg
+
+ 00000339  BE 000000CD		    mov esi, 205
+ 0000033E  BF 00000066		    mov edi, 102
+ 00000343  E8 00000000 E	    call DrawStarReg
+
+ 00000348  BE 000000CE		    mov esi, 206
+ 0000034D  BF 00000066		    mov edi, 102
+ 00000352  E8 00000000 E	    call DrawStarReg
+
+ 00000357  BE 000000C7		    mov esi, 199 
+ 0000035C  BF 00000067		    mov edi, 103
+ 00000361  E8 00000000 E	    call DrawStarReg
+
+ 00000366  BE 000000C8		    mov esi, 200
+ 0000036B  BF 00000067		    mov edi, 103
+ 00000370  E8 00000000 E	    call DrawStarReg
+
+ 00000375  BE 000000CA		    mov esi, 202
+ 0000037A  BF 00000067		    mov edi, 103
+ 0000037F  E8 00000000 E	    call DrawStarReg
+
+ 00000384  BE 000000CB		    mov esi, 203
+ 00000389  BF 00000067		    mov edi, 103
+ 0000038E  E8 00000000 E	    call DrawStarReg
+
+ 00000393  BE 000000CC		    mov esi, 204
+ 00000398  BF 00000067		    mov edi, 103
+ 0000039D  E8 00000000 E	    call DrawStarReg
+
+ 000003A2  BE 000000CE		    mov esi, 206
+ 000003A7  BF 00000067		    mov edi, 103
+ 000003AC  E8 00000000 E	    call DrawStarReg
+
+ 000003B1  BE 000000CF		    mov esi, 207
+ 000003B6  BF 00000067		    mov edi, 103
+ 000003BB  E8 00000000 E	    call DrawStarReg
+
+ 000003C0  BE 000000C6		    mov esi, 198
+ 000003C5  BF 00000068		    mov edi, 104
+ 000003CA  E8 00000000 E	    call DrawStarReg
+
+ 000003CF  BE 000000C7		    mov esi, 199
+ 000003D4  BF 00000068		    mov edi, 104
+ 000003D9  E8 00000000 E	    call DrawStarReg
+
+ 000003DE  BE 000000C8		    mov esi, 200
+ 000003E3  BF 00000068		    mov edi, 104
+ 000003E8  E8 00000000 E	    call DrawStarReg
+
+ 000003ED  BE 000000C9		    mov esi, 201
+ 000003F2  BF 00000068		    mov edi, 104
+ 000003F7  E8 00000000 E	    call DrawStarReg
+
+ 000003FC  BE 000000CA		    mov esi, 202
+ 00000401  BF 00000068		    mov edi, 104
+ 00000406  E8 00000000 E	    call DrawStarReg
+
+ 0000040B  BE 000000CB		    mov esi, 203
+ 00000410  BF 00000068		    mov edi, 104
+ 00000415  E8 00000000 E	    call DrawStarReg
+
+ 0000041A  BE 000000CC		    mov esi, 204
+ 0000041F  BF 00000068		    mov edi, 104
+ 00000424  E8 00000000 E	    call DrawStarReg
+
+ 00000429  BE 000000CD		    mov esi, 205
+ 0000042E  BF 00000068		    mov edi, 104
+ 00000433  E8 00000000 E	    call DrawStarReg
+
+ 00000438  BE 000000CE		    mov esi, 206
+ 0000043D  BF 00000068		    mov edi, 104
+ 00000442  E8 00000000 E	    call DrawStarReg
+
+ 00000447  BE 000000CF		    mov esi, 207
+ 0000044C  BF 00000068		    mov edi, 104
+ 00000451  E8 00000000 E	    call DrawStarReg
+
+ 00000456  BE 000000D0		    mov esi, 208
+ 0000045B  BF 00000068		    mov edi, 104
+ 00000460  E8 00000000 E	    call DrawStarReg
+
+ 00000465  BE 000000C6		    mov esi, 198
+ 0000046A  BF 00000069		    mov edi, 105
+ 0000046F  E8 00000000 E	    call DrawStarReg  
+
+ 00000474  BE 000000C8		    mov esi, 200
+ 00000479  BF 00000069		    mov edi, 105
+ 0000047E  E8 00000000 E	    call DrawStarReg 
+
+ 00000483  BE 000000C9		    mov esi, 201
+ 00000488  BF 00000069		    mov edi, 105
+ 0000048D  E8 00000000 E	    call DrawStarReg 
+
+ 00000492  BE 000000CA		    mov esi, 202
+ 00000497  BF 00000069		    mov edi, 105
+ 0000049C  E8 00000000 E	    call DrawStarReg 
+
+ 000004A1  BE 000000CB		    mov esi, 203
+ 000004A6  BF 00000069		    mov edi, 105
+ 000004AB  E8 00000000 E	    call DrawStarReg 
+
+ 000004B0  BE 000000CC		    mov esi, 204
+ 000004B5  BF 00000069		    mov edi, 105
+ 000004BA  E8 00000000 E	    call DrawStarReg 
+
+ 000004BF  BE 000000CD		    mov esi, 205
+ 000004C4  BF 00000069		    mov edi, 105
+ 000004C9  E8 00000000 E	    call DrawStarReg 
+
+ 000004CE  BE 000000CE		    mov esi, 206
+ 000004D3  BF 00000069		    mov edi, 105
+ 000004D8  E8 00000000 E	    call DrawStarReg 
+
+ 000004DD  BE 000000D0		    mov esi, 208
+ 000004E2  BF 00000069		    mov edi, 105
+ 000004E7  E8 00000000 E	    call DrawStarReg
+
+ 000004EC  BE 000000C6		    mov esi, 198
+ 000004F1  BF 0000006A		    mov edi, 106
+ 000004F6  E8 00000000 E	    call DrawStarReg 
+
+ 000004FB  BE 000000C8		    mov esi, 200
+ 00000500  BF 0000006A		    mov edi, 106
+ 00000505  E8 00000000 E	    call DrawStarReg 
+
+ 0000050A  BE 000000CE		    mov esi, 206
+ 0000050F  BF 0000006A		    mov edi, 106
+ 00000514  E8 00000000 E	    call DrawStarReg 
+
+ 00000519  BE 000000D0		    mov esi, 208
+ 0000051E  BF 0000006A		    mov edi, 106
+ 00000523  E8 00000000 E	    call DrawStarReg    
+
+ 00000528  BE 000000C9		    mov esi, 201
+ 0000052D  BF 0000006B		    mov edi, 107
+ 00000532  E8 00000000 E	    call DrawStarReg 
+
+ 00000537  BE 000000CA		    mov esi, 202
+ 0000053C  BF 0000006B		    mov edi, 107
+ 00000541  E8 00000000 E	    call DrawStarReg 
+
+ 00000546  BE 000000CC		    mov esi, 204
+ 0000054B  BF 0000006B		    mov edi, 107
+ 00000550  E8 00000000 E	    call DrawStarReg 
+
+ 00000555  BE 000000CD		    mov esi, 205
+ 0000055A  BF 0000006B		    mov edi, 107
+ 0000055F  E8 00000000 E	    call DrawStarReg
+
+
+				    ;; invader 3
+				    ;; antennae
+ 00000564  BE 0000012C		    mov esi, 300
+ 00000569  BF 00000064		    mov edi, 100
+ 0000056E  E8 00000000 E	    call DrawStarReg
+
+ 00000573  BE 0000012D		    mov esi, 301
+ 00000578  BF 00000065		    mov edi, 101
+ 0000057D  E8 00000000 E	    call DrawStarReg
+				    
+ 00000582  BE 00000131		    mov esi, 305    
+ 00000587  BF 00000065		    mov edi, 101
+ 0000058C  E8 00000000 E	    call DrawStarReg
+
+ 00000591  BE 00000132		    mov esi, 306
+ 00000596  BF 00000064		    mov edi, 100
+ 0000059B  E8 00000000 E	    call DrawStarReg
+
+				    ;; top of head
+ 000005A0  BE 0000012C		    mov esi, 300
+ 000005A5  BF 00000066		    mov edi, 102
+ 000005AA  E8 00000000 E	    call DrawStarReg
+
+ 000005AF  BE 0000012D		    mov esi, 301
+ 000005B4  BF 00000066		    mov edi, 102
+ 000005B9  E8 00000000 E	    call DrawStarReg
+
+ 000005BE  BE 0000012E		    mov esi, 302
+ 000005C3  BF 00000066		    mov edi, 102
+ 000005C8  E8 00000000 E	    call DrawStarReg
+
+ 000005CD  BE 0000012F		    mov esi, 303
+ 000005D2  BF 00000066		    mov edi, 102
+ 000005D7  E8 00000000 E	    call DrawStarReg
+
+ 000005DC  BE 00000130		    mov esi, 304
+ 000005E1  BF 00000066		    mov edi, 102
+ 000005E6  E8 00000000 E	    call DrawStarReg
+
+ 000005EB  BE 00000131		    mov esi, 305
+ 000005F0  BF 00000066		    mov edi, 102
+ 000005F5  E8 00000000 E	    call DrawStarReg
+
+ 000005FA  BE 00000132		    mov esi, 306
+ 000005FF  BF 00000066		    mov edi, 102
+ 00000604  E8 00000000 E	    call DrawStarReg
+
+ 00000609  BE 0000012B		    mov esi, 299 
+ 0000060E  BF 00000067		    mov edi, 103
+ 00000613  E8 00000000 E	    call DrawStarReg
+
+ 00000618  BE 0000012C		    mov esi, 300
+ 0000061D  BF 00000067		    mov edi, 103
+ 00000622  E8 00000000 E	    call DrawStarReg
+
+ 00000627  BE 0000012E		    mov esi, 302
+ 0000062C  BF 00000067		    mov edi, 103
+ 00000631  E8 00000000 E	    call DrawStarReg
+
+ 00000636  BE 0000012F		    mov esi, 303
+ 0000063B  BF 00000067		    mov edi, 103
+ 00000640  E8 00000000 E	    call DrawStarReg
+
+ 00000645  BE 00000130		    mov esi, 304
+ 0000064A  BF 00000067		    mov edi, 103
+ 0000064F  E8 00000000 E	    call DrawStarReg
+
+ 00000654  BE 00000132		    mov esi, 306
+ 00000659  BF 00000067		    mov edi, 103
+ 0000065E  E8 00000000 E	    call DrawStarReg
+
+ 00000663  BE 00000133		    mov esi, 307
+ 00000668  BF 00000067		    mov edi, 103
+ 0000066D  E8 00000000 E	    call DrawStarReg
+
+ 00000672  BE 0000012A		    mov esi, 298
+ 00000677  BF 00000068		    mov edi, 104
+ 0000067C  E8 00000000 E	    call DrawStarReg
+
+ 00000681  BE 0000012B		    mov esi, 299
+ 00000686  BF 00000068		    mov edi, 104
+ 0000068B  E8 00000000 E	    call DrawStarReg
+
+ 00000690  BE 0000012C		    mov esi, 300
+ 00000695  BF 00000068		    mov edi, 104
+ 0000069A  E8 00000000 E	    call DrawStarReg
+
+ 0000069F  BE 0000012D		    mov esi, 301
+ 000006A4  BF 00000068		    mov edi, 104
+ 000006A9  E8 00000000 E	    call DrawStarReg
+
+ 000006AE  BE 0000012E		    mov esi, 302
+ 000006B3  BF 00000068		    mov edi, 104
+ 000006B8  E8 00000000 E	    call DrawStarReg
+
+ 000006BD  BE 0000012F		    mov esi, 303
+ 000006C2  BF 00000068		    mov edi, 104
+ 000006C7  E8 00000000 E	    call DrawStarReg
+
+ 000006CC  BE 00000130		    mov esi, 304
+ 000006D1  BF 00000068		    mov edi, 104
+ 000006D6  E8 00000000 E	    call DrawStarReg
+
+ 000006DB  BE 00000131		    mov esi, 305
+ 000006E0  BF 00000068		    mov edi, 104
+ 000006E5  E8 00000000 E	    call DrawStarReg
+
+ 000006EA  BE 00000132		    mov esi, 306
+ 000006EF  BF 00000068		    mov edi, 104
+ 000006F4  E8 00000000 E	    call DrawStarReg
+
+ 000006F9  BE 00000133		    mov esi, 307
+ 000006FE  BF 00000068		    mov edi, 104
+ 00000703  E8 00000000 E	    call DrawStarReg
+
+ 00000708  BE 00000134		    mov esi, 308
+ 0000070D  BF 00000068		    mov edi, 104
+ 00000712  E8 00000000 E	    call DrawStarReg
+
+ 00000717  BE 0000012A		    mov esi, 298
+ 0000071C  BF 00000069		    mov edi, 105
+ 00000721  E8 00000000 E	    call DrawStarReg  
+
+ 00000726  BE 0000012C		    mov esi, 300
+ 0000072B  BF 00000069		    mov edi, 105
+ 00000730  E8 00000000 E	    call DrawStarReg 
+
+ 00000735  BE 0000012D		    mov esi, 301
+ 0000073A  BF 00000069		    mov edi, 105
+ 0000073F  E8 00000000 E	    call DrawStarReg 
+
+ 00000744  BE 0000012E		    mov esi, 302
+ 00000749  BF 00000069		    mov edi, 105
+ 0000074E  E8 00000000 E	    call DrawStarReg 
+
+ 00000753  BE 0000012F		    mov esi, 303
+ 00000758  BF 00000069		    mov edi, 105
+ 0000075D  E8 00000000 E	    call DrawStarReg 
+
+ 00000762  BE 00000130		    mov esi, 304
+ 00000767  BF 00000069		    mov edi, 105
+ 0000076C  E8 00000000 E	    call DrawStarReg 
+
+ 00000771  BE 00000131		    mov esi, 305
+ 00000776  BF 00000069		    mov edi, 105
+ 0000077B  E8 00000000 E	    call DrawStarReg 
+
+ 00000780  BE 00000132		    mov esi, 306
+ 00000785  BF 00000069		    mov edi, 105
+ 0000078A  E8 00000000 E	    call DrawStarReg 
+
+ 0000078F  BE 00000134		    mov esi, 308
+ 00000794  BF 00000069		    mov edi, 105
+ 00000799  E8 00000000 E	    call DrawStarReg
+
+ 0000079E  BE 0000012A		    mov esi, 298
+ 000007A3  BF 0000006A		    mov edi, 106
+ 000007A8  E8 00000000 E	    call DrawStarReg 
+
+ 000007AD  BE 0000012C		    mov esi, 300
+ 000007B2  BF 0000006A		    mov edi, 106
+ 000007B7  E8 00000000 E	    call DrawStarReg 
+
+ 000007BC  BE 00000132		    mov esi, 306
+ 000007C1  BF 0000006A		    mov edi, 106
+ 000007C6  E8 00000000 E	    call DrawStarReg 
+
+ 000007CB  BE 00000134		    mov esi, 308
+ 000007D0  BF 0000006A		    mov edi, 106
+ 000007D5  E8 00000000 E	    call DrawStarReg    
+
+ 000007DA  BE 0000012D		    mov esi, 301
+ 000007DF  BF 0000006B		    mov edi, 107
+ 000007E4  E8 00000000 E	    call DrawStarReg 
+
+ 000007E9  BE 0000012E		    mov esi, 302
+ 000007EE  BF 0000006B		    mov edi, 107
+ 000007F3  E8 00000000 E	    call DrawStarReg 
+
+ 000007F8  BE 00000130		    mov esi, 304
+ 000007FD  BF 0000006B		    mov edi, 107
+ 00000802  E8 00000000 E	    call DrawStarReg 
+
+ 00000807  BE 00000131		    mov esi, 305
+ 0000080C  BF 0000006B		    mov edi, 107
+ 00000811  E8 00000000 E	    call DrawStarReg
+
+
+				    ;; invader 4
+				    ;; antennae
+ 00000816  BE 00000190		    mov esi, 400
+ 0000081B  BF 00000064		    mov edi, 100
+ 00000820  E8 00000000 E	    call DrawStarReg
+
+ 00000825  BE 00000191		    mov esi, 401
+ 0000082A  BF 00000065		    mov edi, 101
+ 0000082F  E8 00000000 E	    call DrawStarReg
+				    
+ 00000834  BE 00000195		    mov esi, 405    
+ 00000839  BF 00000065		    mov edi, 101
+ 0000083E  E8 00000000 E	    call DrawStarReg
+
+ 00000843  BE 00000196		    mov esi, 406
+ 00000848  BF 00000064		    mov edi, 100
+ 0000084D  E8 00000000 E	    call DrawStarReg
+
+				    ;; top of head
+ 00000852  BE 00000190		    mov esi, 400
+ 00000857  BF 00000066		    mov edi, 102
+ 0000085C  E8 00000000 E	    call DrawStarReg
+
+ 00000861  BE 00000191		    mov esi, 401
+ 00000866  BF 00000066		    mov edi, 102
+ 0000086B  E8 00000000 E	    call DrawStarReg
+
+ 00000870  BE 00000192		    mov esi, 402
+ 00000875  BF 00000066		    mov edi, 102
+ 0000087A  E8 00000000 E	    call DrawStarReg
+
+ 0000087F  BE 00000193		    mov esi, 403
+ 00000884  BF 00000066		    mov edi, 102
+ 00000889  E8 00000000 E	    call DrawStarReg
+
+ 0000088E  BE 00000194		    mov esi, 404
+ 00000893  BF 00000066		    mov edi, 102
+ 00000898  E8 00000000 E	    call DrawStarReg
+
+ 0000089D  BE 00000195		    mov esi, 405
+ 000008A2  BF 00000066		    mov edi, 102
+ 000008A7  E8 00000000 E	    call DrawStarReg
+
+ 000008AC  BE 00000196		    mov esi, 406
+ 000008B1  BF 00000066		    mov edi, 102
+ 000008B6  E8 00000000 E	    call DrawStarReg
+
+ 000008BB  BE 0000018F		    mov esi, 399 
+ 000008C0  BF 00000067		    mov edi, 103
+ 000008C5  E8 00000000 E	    call DrawStarReg
+
+ 000008CA  BE 00000190		    mov esi, 400
+ 000008CF  BF 00000067		    mov edi, 103
+ 000008D4  E8 00000000 E	    call DrawStarReg
+
+ 000008D9  BE 00000192		    mov esi, 402
+ 000008DE  BF 00000067		    mov edi, 103
+ 000008E3  E8 00000000 E	    call DrawStarReg
+
+ 000008E8  BE 00000193		    mov esi, 403
+ 000008ED  BF 00000067		    mov edi, 103
+ 000008F2  E8 00000000 E	    call DrawStarReg
+
+ 000008F7  BE 00000194		    mov esi, 404
+ 000008FC  BF 00000067		    mov edi, 103
+ 00000901  E8 00000000 E	    call DrawStarReg
+
+ 00000906  BE 00000196		    mov esi, 406
+ 0000090B  BF 00000067		    mov edi, 103
+ 00000910  E8 00000000 E	    call DrawStarReg
+
+ 00000915  BE 00000197		    mov esi, 407
+ 0000091A  BF 00000067		    mov edi, 103
+ 0000091F  E8 00000000 E	    call DrawStarReg
+
+ 00000924  BE 0000018E		    mov esi, 398
+ 00000929  BF 00000068		    mov edi, 104
+ 0000092E  E8 00000000 E	    call DrawStarReg
+
+ 00000933  BE 0000018F		    mov esi, 399
+ 00000938  BF 00000068		    mov edi, 104
+ 0000093D  E8 00000000 E	    call DrawStarReg
+
+ 00000942  BE 00000190		    mov esi, 400
+ 00000947  BF 00000068		    mov edi, 104
+ 0000094C  E8 00000000 E	    call DrawStarReg
+
+ 00000951  BE 00000191		    mov esi, 401
+ 00000956  BF 00000068		    mov edi, 104
+ 0000095B  E8 00000000 E	    call DrawStarReg
+
+ 00000960  BE 00000192		    mov esi, 402
+ 00000965  BF 00000068		    mov edi, 104
+ 0000096A  E8 00000000 E	    call DrawStarReg
+
+ 0000096F  BE 00000193		    mov esi, 403
+ 00000974  BF 00000068		    mov edi, 104
+ 00000979  E8 00000000 E	    call DrawStarReg
+
+ 0000097E  BE 00000194		    mov esi, 404
+ 00000983  BF 00000068		    mov edi, 104
+ 00000988  E8 00000000 E	    call DrawStarReg
+
+ 0000098D  BE 00000195		    mov esi, 405
+ 00000992  BF 00000068		    mov edi, 104
+ 00000997  E8 00000000 E	    call DrawStarReg
+
+ 0000099C  BE 00000196		    mov esi, 406
+ 000009A1  BF 00000068		    mov edi, 104
+ 000009A6  E8 00000000 E	    call DrawStarReg
+
+ 000009AB  BE 00000197		    mov esi, 407
+ 000009B0  BF 00000068		    mov edi, 104
+ 000009B5  E8 00000000 E	    call DrawStarReg
+
+ 000009BA  BE 00000198		    mov esi, 408
+ 000009BF  BF 00000068		    mov edi, 104
+ 000009C4  E8 00000000 E	    call DrawStarReg
+
+ 000009C9  BE 0000018E		    mov esi, 398
+ 000009CE  BF 00000069		    mov edi, 105
+ 000009D3  E8 00000000 E	    call DrawStarReg  
+
+ 000009D8  BE 00000190		    mov esi, 400
+ 000009DD  BF 00000069		    mov edi, 105
+ 000009E2  E8 00000000 E	    call DrawStarReg 
+
+ 000009E7  BE 00000191		    mov esi, 401
+ 000009EC  BF 00000069		    mov edi, 105
+ 000009F1  E8 00000000 E	    call DrawStarReg 
+
+ 000009F6  BE 00000192		    mov esi, 402
+ 000009FB  BF 00000069		    mov edi, 105
+ 00000A00  E8 00000000 E	    call DrawStarReg 
+
+ 00000A05  BE 00000193		    mov esi, 403
+ 00000A0A  BF 00000069		    mov edi, 105
+ 00000A0F  E8 00000000 E	    call DrawStarReg 
+
+ 00000A14  BE 00000194		    mov esi, 404
+ 00000A19  BF 00000069		    mov edi, 105
+ 00000A1E  E8 00000000 E	    call DrawStarReg 
+
+ 00000A23  BE 00000195		    mov esi, 405
+ 00000A28  BF 00000069		    mov edi, 105
+ 00000A2D  E8 00000000 E	    call DrawStarReg 
+
+ 00000A32  BE 00000196		    mov esi, 406
+ 00000A37  BF 00000069		    mov edi, 105
+ 00000A3C  E8 00000000 E	    call DrawStarReg 
+
+ 00000A41  BE 00000198		    mov esi, 408
+ 00000A46  BF 00000069		    mov edi, 105
+ 00000A4B  E8 00000000 E	    call DrawStarReg
+
+ 00000A50  BE 0000018E		    mov esi, 398
+ 00000A55  BF 0000006A		    mov edi, 106
+ 00000A5A  E8 00000000 E	    call DrawStarReg 
+
+ 00000A5F  BE 00000190		    mov esi, 400
+ 00000A64  BF 0000006A		    mov edi, 106
+ 00000A69  E8 00000000 E	    call DrawStarReg 
+
+ 00000A6E  BE 00000196		    mov esi, 406
+ 00000A73  BF 0000006A		    mov edi, 106
+ 00000A78  E8 00000000 E	    call DrawStarReg 
+
+ 00000A7D  BE 00000198		    mov esi, 408
+ 00000A82  BF 0000006A		    mov edi, 106
+ 00000A87  E8 00000000 E	    call DrawStarReg    
+
+ 00000A8C  BE 00000191		    mov esi, 401
+ 00000A91  BF 0000006B		    mov edi, 107
+ 00000A96  E8 00000000 E	    call DrawStarReg 
+
+ 00000A9B  BE 00000192		    mov esi, 402
+ 00000AA0  BF 0000006B		    mov edi, 107
+ 00000AA5  E8 00000000 E	    call DrawStarReg 
+
+ 00000AAA  BE 00000194		    mov esi, 404
+ 00000AAF  BF 0000006B		    mov edi, 107
+ 00000AB4  E8 00000000 E	    call DrawStarReg 
+
+ 00000AB9  BE 00000195		    mov esi, 405
+ 00000ABE  BF 0000006B		    mov edi, 107
+ 00000AC3  E8 00000000 E	    call DrawStarReg
+
+				    ;;invader 5
+				    ;; antennae
+
+ 00000AC8  BE 000001F4		    mov esi, 500
+ 00000ACD  BF 00000064		    mov edi, 100
+ 00000AD2  E8 00000000 E	    call DrawStarReg
+
+ 00000AD7  BE 000001F5		    mov esi, 501
+ 00000ADC  BF 00000065		    mov edi, 101
+ 00000AE1  E8 00000000 E	    call DrawStarReg
+				    
+ 00000AE6  BE 000001F9		    mov esi, 505    
+ 00000AEB  BF 00000065		    mov edi, 101
+ 00000AF0  E8 00000000 E	    call DrawStarReg
+
+ 00000AF5  BE 000001FA		    mov esi, 506
+ 00000AFA  BF 00000064		    mov edi, 100
+ 00000AFF  E8 00000000 E	    call DrawStarReg
+
+				    ;; top of head
+ 00000B04  BE 000001F4		    mov esi, 500
+ 00000B09  BF 00000066		    mov edi, 102
+ 00000B0E  E8 00000000 E	    call DrawStarReg
+
+ 00000B13  BE 000001F5		    mov esi, 501
+ 00000B18  BF 00000066		    mov edi, 102
+ 00000B1D  E8 00000000 E	    call DrawStarReg
+
+ 00000B22  BE 000001F6		    mov esi, 502
+ 00000B27  BF 00000066		    mov edi, 102
+ 00000B2C  E8 00000000 E	    call DrawStarReg
+
+ 00000B31  BE 000001F7		    mov esi, 503
+ 00000B36  BF 00000066		    mov edi, 102
+ 00000B3B  E8 00000000 E	    call DrawStarReg
+
+ 00000B40  BE 000001F8		    mov esi, 504
+ 00000B45  BF 00000066		    mov edi, 102
+ 00000B4A  E8 00000000 E	    call DrawStarReg
+
+ 00000B4F  BE 000001F9		    mov esi, 505
+ 00000B54  BF 00000066		    mov edi, 102
+ 00000B59  E8 00000000 E	    call DrawStarReg
+
+ 00000B5E  BE 000001FA		    mov esi, 506
+ 00000B63  BF 00000066		    mov edi, 102
+ 00000B68  E8 00000000 E	    call DrawStarReg
+
+ 00000B6D  BE 000001F3		    mov esi, 499 
+ 00000B72  BF 00000067		    mov edi, 103
+ 00000B77  E8 00000000 E	    call DrawStarReg
+
+ 00000B7C  BE 000001F4		    mov esi, 500
+ 00000B81  BF 00000067		    mov edi, 103
+ 00000B86  E8 00000000 E	    call DrawStarReg
+
+ 00000B8B  BE 000001F6		    mov esi, 502
+ 00000B90  BF 00000067		    mov edi, 103
+ 00000B95  E8 00000000 E	    call DrawStarReg
+
+ 00000B9A  BE 000001F7		    mov esi, 503
+ 00000B9F  BF 00000067		    mov edi, 103
+ 00000BA4  E8 00000000 E	    call DrawStarReg
+
+ 00000BA9  BE 000001F8		    mov esi, 504
+ 00000BAE  BF 00000067		    mov edi, 103
+ 00000BB3  E8 00000000 E	    call DrawStarReg
+
+ 00000BB8  BE 000001FA		    mov esi, 506
+ 00000BBD  BF 00000067		    mov edi, 103
+ 00000BC2  E8 00000000 E	    call DrawStarReg
+
+ 00000BC7  BE 000001FB		    mov esi, 507
+ 00000BCC  BF 00000067		    mov edi, 103
+ 00000BD1  E8 00000000 E	    call DrawStarReg
+
+ 00000BD6  BE 000001F2		    mov esi, 498
+ 00000BDB  BF 00000068		    mov edi, 104
+ 00000BE0  E8 00000000 E	    call DrawStarReg
+
+ 00000BE5  BE 000001F3		    mov esi, 499
+ 00000BEA  BF 00000068		    mov edi, 104
+ 00000BEF  E8 00000000 E	    call DrawStarReg
+
+ 00000BF4  BE 000001F4		    mov esi, 500
+ 00000BF9  BF 00000068		    mov edi, 104
+ 00000BFE  E8 00000000 E	    call DrawStarReg
+
+ 00000C03  BE 000001F5		    mov esi, 501
+ 00000C08  BF 00000068		    mov edi, 104
+ 00000C0D  E8 00000000 E	    call DrawStarReg
+
+ 00000C12  BE 000001F6		    mov esi, 502
+ 00000C17  BF 00000068		    mov edi, 104
+ 00000C1C  E8 00000000 E	    call DrawStarReg
+
+ 00000C21  BE 000001F7		    mov esi, 503
+ 00000C26  BF 00000068		    mov edi, 104
+ 00000C2B  E8 00000000 E	    call DrawStarReg
+
+ 00000C30  BE 000001F8		    mov esi, 504
+ 00000C35  BF 00000068		    mov edi, 104
+ 00000C3A  E8 00000000 E	    call DrawStarReg
+
+ 00000C3F  BE 000001F9		    mov esi, 505
+ 00000C44  BF 00000068		    mov edi, 104
+ 00000C49  E8 00000000 E	    call DrawStarReg
+
+ 00000C4E  BE 000001FA		    mov esi, 506
+ 00000C53  BF 00000068		    mov edi, 104
+ 00000C58  E8 00000000 E	    call DrawStarReg
+
+ 00000C5D  BE 000001FB		    mov esi, 507
+ 00000C62  BF 00000068		    mov edi, 104
+ 00000C67  E8 00000000 E	    call DrawStarReg
+
+ 00000C6C  BE 000001FC		    mov esi, 508
+ 00000C71  BF 00000068		    mov edi, 104
+ 00000C76  E8 00000000 E	    call DrawStarReg
+
+ 00000C7B  BE 000001F2		    mov esi, 498
+ 00000C80  BF 00000069		    mov edi, 105
+ 00000C85  E8 00000000 E	    call DrawStarReg  
+
+ 00000C8A  BE 000001F4		    mov esi, 500
+ 00000C8F  BF 00000069		    mov edi, 105
+ 00000C94  E8 00000000 E	    call DrawStarReg 
+
+ 00000C99  BE 000001F5		    mov esi, 501
+ 00000C9E  BF 00000069		    mov edi, 105
+ 00000CA3  E8 00000000 E	    call DrawStarReg 
+
+ 00000CA8  BE 000001F6		    mov esi, 502
+ 00000CAD  BF 00000069		    mov edi, 105
+ 00000CB2  E8 00000000 E	    call DrawStarReg 
+
+ 00000CB7  BE 000001F7		    mov esi, 503
+ 00000CBC  BF 00000069		    mov edi, 105
+ 00000CC1  E8 00000000 E	    call DrawStarReg 
+
+ 00000CC6  BE 000001F8		    mov esi, 504
+ 00000CCB  BF 00000069		    mov edi, 105
+ 00000CD0  E8 00000000 E	    call DrawStarReg 
+
+ 00000CD5  BE 000001F9		    mov esi, 505
+ 00000CDA  BF 00000069		    mov edi, 105
+ 00000CDF  E8 00000000 E	    call DrawStarReg 
+
+ 00000CE4  BE 000001FA		    mov esi, 506
+ 00000CE9  BF 00000069		    mov edi, 105
+ 00000CEE  E8 00000000 E	    call DrawStarReg 
+
+ 00000CF3  BE 000001FC		    mov esi, 508
+ 00000CF8  BF 00000069		    mov edi, 105
+ 00000CFD  E8 00000000 E	    call DrawStarReg
+
+ 00000D02  BE 000001F2		    mov esi, 498
+ 00000D07  BF 0000006A		    mov edi, 106
+ 00000D0C  E8 00000000 E	    call DrawStarReg 
+
+ 00000D11  BE 000001F4		    mov esi, 500
+ 00000D16  BF 0000006A		    mov edi, 106
+ 00000D1B  E8 00000000 E	    call DrawStarReg 
+
+ 00000D20  BE 000001FA		    mov esi, 506
+ 00000D25  BF 0000006A		    mov edi, 106
+ 00000D2A  E8 00000000 E	    call DrawStarReg 
+
+ 00000D2F  BE 000001FC		    mov esi, 508
+ 00000D34  BF 0000006A		    mov edi, 106
+ 00000D39  E8 00000000 E	    call DrawStarReg    
+
+ 00000D3E  BE 000001F5		    mov esi, 501
+ 00000D43  BF 0000006B		    mov edi, 107
+ 00000D48  E8 00000000 E	    call DrawStarReg 
+
+ 00000D4D  BE 000001F6		    mov esi, 502
+ 00000D52  BF 0000006B		    mov edi, 107
+ 00000D57  E8 00000000 E	    call DrawStarReg 
+
+ 00000D5C  BE 000001F8		    mov esi, 504
+ 00000D61  BF 0000006B		    mov edi, 107
+ 00000D66  E8 00000000 E	    call DrawStarReg 
+
+ 00000D6B  BE 000001F9		    mov esi, 505
+ 00000D70  BF 0000006B		    mov edi, 107
+ 00000D75  E8 00000000 E	    call DrawStarReg
+				           
+
+				    ;; invader 6
+				    ;; antennae
+
+ 00000D7A  BE 00000258		    mov esi, 600
+ 00000D7F  BF 00000064		    mov edi, 100
+ 00000D84  E8 00000000 E	    call DrawStarReg
+
+ 00000D89  BE 00000259		    mov esi, 601
+ 00000D8E  BF 00000065		    mov edi, 101
+ 00000D93  E8 00000000 E	    call DrawStarReg
+				    
+ 00000D98  BE 0000025D		    mov esi, 605    
+ 00000D9D  BF 00000065		    mov edi, 101
+ 00000DA2  E8 00000000 E	    call DrawStarReg
+
+ 00000DA7  BE 0000025E		    mov esi, 606
+ 00000DAC  BF 00000064		    mov edi, 100
+ 00000DB1  E8 00000000 E	    call DrawStarReg
+
+				    ;; top of head
+ 00000DB6  BE 00000258		    mov esi, 600
+ 00000DBB  BF 00000066		    mov edi, 102
+ 00000DC0  E8 00000000 E	    call DrawStarReg
+
+ 00000DC5  BE 00000259		    mov esi, 601
+ 00000DCA  BF 00000066		    mov edi, 102
+ 00000DCF  E8 00000000 E	    call DrawStarReg
+
+ 00000DD4  BE 0000025A		    mov esi, 602
+ 00000DD9  BF 00000066		    mov edi, 102
+ 00000DDE  E8 00000000 E	    call DrawStarReg
+
+ 00000DE3  BE 0000025B		    mov esi, 603
+ 00000DE8  BF 00000066		    mov edi, 102
+ 00000DED  E8 00000000 E	    call DrawStarReg
+
+ 00000DF2  BE 0000025C		    mov esi, 604
+ 00000DF7  BF 00000066		    mov edi, 102
+ 00000DFC  E8 00000000 E	    call DrawStarReg
+
+ 00000E01  BE 0000025D		    mov esi, 605
+ 00000E06  BF 00000066		    mov edi, 102
+ 00000E0B  E8 00000000 E	    call DrawStarReg
+
+ 00000E10  BE 0000025E		    mov esi, 606
+ 00000E15  BF 00000066		    mov edi, 102
+ 00000E1A  E8 00000000 E	    call DrawStarReg
+
+ 00000E1F  BE 00000257		    mov esi, 599 
+ 00000E24  BF 00000067		    mov edi, 103
+ 00000E29  E8 00000000 E	    call DrawStarReg
+
+ 00000E2E  BE 00000258		    mov esi, 600
+ 00000E33  BF 00000067		    mov edi, 103
+ 00000E38  E8 00000000 E	    call DrawStarReg
+
+ 00000E3D  BE 0000025A		    mov esi, 602
+ 00000E42  BF 00000067		    mov edi, 103
+ 00000E47  E8 00000000 E	    call DrawStarReg
+
+ 00000E4C  BE 0000025B		    mov esi, 603
+ 00000E51  BF 00000067		    mov edi, 103
+ 00000E56  E8 00000000 E	    call DrawStarReg
+
+ 00000E5B  BE 0000025C		    mov esi, 604
+ 00000E60  BF 00000067		    mov edi, 103
+ 00000E65  E8 00000000 E	    call DrawStarReg
+
+ 00000E6A  BE 0000025E		    mov esi, 606
+ 00000E6F  BF 00000067		    mov edi, 103
+ 00000E74  E8 00000000 E	    call DrawStarReg
+
+ 00000E79  BE 0000025F		    mov esi, 607
+ 00000E7E  BF 00000067		    mov edi, 103
+ 00000E83  E8 00000000 E	    call DrawStarReg
+
+ 00000E88  BE 00000256		    mov esi, 598
+ 00000E8D  BF 00000068		    mov edi, 104
+ 00000E92  E8 00000000 E	    call DrawStarReg
+
+ 00000E97  BE 00000257		    mov esi, 599
+ 00000E9C  BF 00000068		    mov edi, 104
+ 00000EA1  E8 00000000 E	    call DrawStarReg
+
+ 00000EA6  BE 00000258		    mov esi, 600
+ 00000EAB  BF 00000068		    mov edi, 104
+ 00000EB0  E8 00000000 E	    call DrawStarReg
+
+ 00000EB5  BE 00000259		    mov esi, 601
+ 00000EBA  BF 00000068		    mov edi, 104
+ 00000EBF  E8 00000000 E	    call DrawStarReg
+
+ 00000EC4  BE 0000025A		    mov esi, 602
+ 00000EC9  BF 00000068		    mov edi, 104
+ 00000ECE  E8 00000000 E	    call DrawStarReg
+
+ 00000ED3  BE 0000025B		    mov esi, 603
+ 00000ED8  BF 00000068		    mov edi, 104
+ 00000EDD  E8 00000000 E	    call DrawStarReg
+
+ 00000EE2  BE 0000025C		    mov esi, 604
+ 00000EE7  BF 00000068		    mov edi, 104
+ 00000EEC  E8 00000000 E	    call DrawStarReg
+
+ 00000EF1  BE 0000025D		    mov esi, 605
+ 00000EF6  BF 00000068		    mov edi, 104
+ 00000EFB  E8 00000000 E	    call DrawStarReg
+
+ 00000F00  BE 0000025E		    mov esi, 606
+ 00000F05  BF 00000068		    mov edi, 104
+ 00000F0A  E8 00000000 E	    call DrawStarReg
+
+ 00000F0F  BE 0000025F		    mov esi, 607
+ 00000F14  BF 00000068		    mov edi, 104
+ 00000F19  E8 00000000 E	    call DrawStarReg
+
+ 00000F1E  BE 00000260		    mov esi, 608
+ 00000F23  BF 00000068		    mov edi, 104
+ 00000F28  E8 00000000 E	    call DrawStarReg
+
+ 00000F2D  BE 00000256		    mov esi, 598
+ 00000F32  BF 00000069		    mov edi, 105
+ 00000F37  E8 00000000 E	    call DrawStarReg  
+
+ 00000F3C  BE 00000258		    mov esi, 600
+ 00000F41  BF 00000069		    mov edi, 105
+ 00000F46  E8 00000000 E	    call DrawStarReg 
+
+ 00000F4B  BE 00000259		    mov esi, 601
+ 00000F50  BF 00000069		    mov edi, 105
+ 00000F55  E8 00000000 E	    call DrawStarReg 
+
+ 00000F5A  BE 0000025A		    mov esi, 602
+ 00000F5F  BF 00000069		    mov edi, 105
+ 00000F64  E8 00000000 E	    call DrawStarReg 
+
+ 00000F69  BE 0000025B		    mov esi, 603
+ 00000F6E  BF 00000069		    mov edi, 105
+ 00000F73  E8 00000000 E	    call DrawStarReg 
+
+ 00000F78  BE 0000025C		    mov esi, 604
+ 00000F7D  BF 00000069		    mov edi, 105
+ 00000F82  E8 00000000 E	    call DrawStarReg 
+
+ 00000F87  BE 0000025D		    mov esi, 605
+ 00000F8C  BF 00000069		    mov edi, 105
+ 00000F91  E8 00000000 E	    call DrawStarReg 
+
+ 00000F96  BE 0000025E		    mov esi, 606
+ 00000F9B  BF 00000069		    mov edi, 105
+ 00000FA0  E8 00000000 E	    call DrawStarReg 
+
+ 00000FA5  BE 00000260		    mov esi, 608
+ 00000FAA  BF 00000069		    mov edi, 105
+ 00000FAF  E8 00000000 E	    call DrawStarReg
+
+ 00000FB4  BE 00000256		    mov esi, 598
+ 00000FB9  BF 0000006A		    mov edi, 106
+ 00000FBE  E8 00000000 E	    call DrawStarReg 
+
+ 00000FC3  BE 00000258		    mov esi, 600
+ 00000FC8  BF 0000006A		    mov edi, 106
+ 00000FCD  E8 00000000 E	    call DrawStarReg 
+
+ 00000FD2  BE 0000025E		    mov esi, 606
+ 00000FD7  BF 0000006A		    mov edi, 106
+ 00000FDC  E8 00000000 E	    call DrawStarReg 
+
+ 00000FE1  BE 00000260		    mov esi, 608
+ 00000FE6  BF 0000006A		    mov edi, 106
+ 00000FEB  E8 00000000 E	    call DrawStarReg    
+
+ 00000FF0  BE 00000259		    mov esi, 601
+ 00000FF5  BF 0000006B		    mov edi, 107
+ 00000FFA  E8 00000000 E	    call DrawStarReg 
+
+ 00000FFF  BE 0000025A		    mov esi, 602
+ 00001004  BF 0000006B		    mov edi, 107
+ 00001009  E8 00000000 E	    call DrawStarReg 
+
+ 0000100E  BE 0000025C		    mov esi, 604
+ 00001013  BF 0000006B		    mov edi, 107
+ 00001018  E8 00000000 E	    call DrawStarReg 
+
+ 0000101D  BE 0000025D		    mov esi, 605
+ 00001022  BF 0000006B		    mov edi, 107
+ 00001027  E8 00000000 E	    call DrawStarReg
+				           
+
+				    ;;invader 7
+				    ;; antennae
+
+ 0000102C  BE 00000002		    mov esi, 2
+ 00001031  BF 00000064		    mov edi, 100
+ 00001036  E8 00000000 E	    call DrawStarReg
+
+ 0000103B  BE 00000003		    mov esi, 3
+ 00001040  BF 00000065		    mov edi, 101
+ 00001045  E8 00000000 E	    call DrawStarReg
+				    
+ 0000104A  BE 00000007		    mov esi, 7    
+ 0000104F  BF 00000065		    mov edi, 101
+ 00001054  E8 00000000 E	    call DrawStarReg
+
+ 00001059  BE 00000008		    mov esi, 8
+ 0000105E  BF 00000064		    mov edi, 100
+ 00001063  E8 00000000 E	    call DrawStarReg
+
+				    ;; top of head
+ 00001068  BE 00000002		    mov esi, 2
+ 0000106D  BF 00000066		    mov edi, 102
+ 00001072  E8 00000000 E	    call DrawStarReg
+
+ 00001077  BE 00000003		    mov esi, 3
+ 0000107C  BF 00000066		    mov edi, 102
+ 00001081  E8 00000000 E	    call DrawStarReg
+
+ 00001086  BE 00000004		    mov esi, 4
+ 0000108B  BF 00000066		    mov edi, 102
+ 00001090  E8 00000000 E	    call DrawStarReg
+
+ 00001095  BE 00000005		    mov esi, 5
+ 0000109A  BF 00000066		    mov edi, 102
+ 0000109F  E8 00000000 E	    call DrawStarReg
+
+ 000010A4  BE 00000006		    mov esi, 6
+ 000010A9  BF 00000066		    mov edi, 102
+ 000010AE  E8 00000000 E	    call DrawStarReg
+
+ 000010B3  BE 00000007		    mov esi, 7
+ 000010B8  BF 00000066		    mov edi, 102
+ 000010BD  E8 00000000 E	    call DrawStarReg
+
+ 000010C2  BE 00000008		    mov esi, 8
+ 000010C7  BF 00000066		    mov edi, 102
+ 000010CC  E8 00000000 E	    call DrawStarReg
+
+ 000010D1  BE 00000001		    mov esi,  1 
+ 000010D6  BF 00000067		    mov edi, 103
+ 000010DB  E8 00000000 E	    call DrawStarReg
+
+ 000010E0  BE 00000002		    mov esi, 2
+ 000010E5  BF 00000067		    mov edi, 103
+ 000010EA  E8 00000000 E	    call DrawStarReg
+
+ 000010EF  BE 00000004		    mov esi, 4
+ 000010F4  BF 00000067		    mov edi, 103
+ 000010F9  E8 00000000 E	    call DrawStarReg
+
+ 000010FE  BE 00000005		    mov esi, 5
+ 00001103  BF 00000067		    mov edi, 103
+ 00001108  E8 00000000 E	    call DrawStarReg
+
+ 0000110D  BE 00000006		    mov esi, 6
+ 00001112  BF 00000067		    mov edi, 103
+ 00001117  E8 00000000 E	    call DrawStarReg
+
+ 0000111C  BE 00000008		    mov esi, 8
+ 00001121  BF 00000067		    mov edi, 103
+ 00001126  E8 00000000 E	    call DrawStarReg
+
+ 0000112B  BE 00000009		    mov esi, 9
+ 00001130  BF 00000067		    mov edi, 103
+ 00001135  E8 00000000 E	    call DrawStarReg
+
+ 0000113A  BE 00000000		    mov esi,  0
+ 0000113F  BF 00000068		    mov edi, 104
+ 00001144  E8 00000000 E	    call DrawStarReg
+
+ 00001149  BE 00000001		    mov esi,  1
+ 0000114E  BF 00000068		    mov edi, 104
+ 00001153  E8 00000000 E	    call DrawStarReg
+
+ 00001158  BE 00000002		    mov esi, 2
+ 0000115D  BF 00000068		    mov edi, 104
+ 00001162  E8 00000000 E	    call DrawStarReg
+
+ 00001167  BE 00000003		    mov esi, 3
+ 0000116C  BF 00000068		    mov edi, 104
+ 00001171  E8 00000000 E	    call DrawStarReg
+
+ 00001176  BE 00000004		    mov esi, 4
+ 0000117B  BF 00000068		    mov edi, 104
+ 00001180  E8 00000000 E	    call DrawStarReg
+
+ 00001185  BE 00000005		    mov esi, 5
+ 0000118A  BF 00000068		    mov edi, 104
+ 0000118F  E8 00000000 E	    call DrawStarReg
+
+ 00001194  BE 00000006		    mov esi, 6
+ 00001199  BF 00000068		    mov edi, 104
+ 0000119E  E8 00000000 E	    call DrawStarReg
+
+ 000011A3  BE 00000007		    mov esi, 7
+ 000011A8  BF 00000068		    mov edi, 104
+ 000011AD  E8 00000000 E	    call DrawStarReg
+
+ 000011B2  BE 00000008		    mov esi, 8
+ 000011B7  BF 00000068		    mov edi, 104
+ 000011BC  E8 00000000 E	    call DrawStarReg
+
+ 000011C1  BE 00000009		    mov esi, 9
+ 000011C6  BF 00000068		    mov edi, 104
+ 000011CB  E8 00000000 E	    call DrawStarReg
+
+ 000011D0  BE 0000000A		    mov esi, 10
+ 000011D5  BF 00000068		    mov edi, 104
+ 000011DA  E8 00000000 E	    call DrawStarReg
+
+ 000011DF  BE 00000000		    mov esi, 0
+ 000011E4  BF 00000069		    mov edi, 105
+ 000011E9  E8 00000000 E	    call DrawStarReg  
+
+ 000011EE  BE 00000002		    mov esi, 2
+ 000011F3  BF 00000069		    mov edi, 105
+ 000011F8  E8 00000000 E	    call DrawStarReg 
+
+ 000011FD  BE 00000003		    mov esi, 3
+ 00001202  BF 00000069		    mov edi, 105
+ 00001207  E8 00000000 E	    call DrawStarReg 
+
+ 0000120C  BE 00000004		    mov esi, 4
+ 00001211  BF 00000069		    mov edi, 105
+ 00001216  E8 00000000 E	    call DrawStarReg 
+
+ 0000121B  BE 00000005		    mov esi, 5
+ 00001220  BF 00000069		    mov edi, 105
+ 00001225  E8 00000000 E	    call DrawStarReg 
+
+ 0000122A  BE 00000006		    mov esi, 6
+ 0000122F  BF 00000069		    mov edi, 105
+ 00001234  E8 00000000 E	    call DrawStarReg 
+
+ 00001239  BE 00000007		    mov esi, 7
+ 0000123E  BF 00000069		    mov edi, 105
+ 00001243  E8 00000000 E	    call DrawStarReg 
+
+ 00001248  BE 00000008		    mov esi, 8
+ 0000124D  BF 00000069		    mov edi, 105
+ 00001252  E8 00000000 E	    call DrawStarReg 
+
+ 00001257  BE 0000000A		    mov esi, 10
+ 0000125C  BF 00000069		    mov edi, 105
+ 00001261  E8 00000000 E	    call DrawStarReg
+
+ 00001266  BE 00000000		    mov esi, 0
+ 0000126B  BF 0000006A		    mov edi, 106
+ 00001270  E8 00000000 E	    call DrawStarReg 
+
+ 00001275  BE 00000002		    mov esi, 2
+ 0000127A  BF 0000006A		    mov edi, 106
+ 0000127F  E8 00000000 E	    call DrawStarReg 
+
+ 00001284  BE 00000008		    mov esi, 8
+ 00001289  BF 0000006A		    mov edi, 106
+ 0000128E  E8 00000000 E	    call DrawStarReg 
+
+ 00001293  BE 0000000A		    mov esi, 10
+ 00001298  BF 0000006A		    mov edi, 106
+ 0000129D  E8 00000000 E	    call DrawStarReg    
+
+ 000012A2  BE 00000003		    mov esi, 3
+ 000012A7  BF 0000006B		    mov edi, 107
+ 000012AC  E8 00000000 E	    call DrawStarReg 
+
+ 000012B1  BE 00000004		    mov esi, 4
+ 000012B6  BF 0000006B		    mov edi, 107
+ 000012BB  E8 00000000 E	    call DrawStarReg 
+
+ 000012C0  BE 00000006		    mov esi, 6
+ 000012C5  BF 0000006B		    mov edi, 107
+ 000012CA  E8 00000000 E	    call DrawStarReg 
+
+ 000012CF  BE 00000007		    mov esi, 7
+ 000012D4  BF 0000006B		    mov edi, 107
+ 000012D9  E8 00000000 E	    call DrawStarReg
+
+ 000012DE  C3			    ret             ;; Don't delete this line
+				    
+ 000012DF			DrawAllStars ENDP
+
+				END
+Microsoft (R) Macro Assembler Version 6.14.8444		    03/13/14 01:10:39
+stars.asm						     Symbols 2 - 1
+
+
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+FLAT . . . . . . . . . . . . . .	GROUP
+STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
+_DATA  . . . . . . . . . . . . .	32 Bit	 00000000 Para	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 000012DF Para	  Public  'CODE'	
+
+
+Procedures,  parameters and locals:
+
+                N a m e                 Type     Value    Attr
+
+DrawAllStars . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 000012DF Public STDCALL
+DrawStarReg  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+@CodeSize  . . . . . . . . . . .	Number	 00000000h   
+@DataSize  . . . . . . . . . . .	Number	 00000000h   
+@Interface . . . . . . . . . . .	Number	 00000003h   
+@Model . . . . . . . . . . . . .	Number	 00000007h   
+@code  . . . . . . . . . . . . .	Text   	 _TEXT
+@data  . . . . . . . . . . . . .	Text   	 FLAT
+@fardata?  . . . . . . . . . . .	Text   	 FLAT
+@fardata . . . . . . . . . . . .	Text   	 FLAT
+@stack . . . . . . . . . . . . .	Text   	 FLAT
+WinMain  . . . . . . . . . . . .	L Near	 00000000 FLAT	External STDCALL
+
+	   0 Warnings
+	   0 Errors

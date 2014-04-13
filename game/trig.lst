@@ -1,0 +1,183 @@
+Microsoft (R) Macro Assembler Version 6.14.8444		    03/13/14 01:10:39
+trig.asm						     Page 1 - 1
+
+
+				; #########################################################################
+				;
+				;   trig.asm - Assembly file for EECS205 Assignment 3
+				;
+				;
+				; #########################################################################
+
+				      .586
+				      .MODEL FLAT,STDCALL
+				      .STACK 4096
+				      option casemap :none  ; case sensitive
+
+				    include trig.inc	
+			      C ; #########################################################################
+			      C ;
+			      C ;   trig.inc - Includes for EECS205 Assignment 3
+			      C ;
+			      C ;
+			      C ; #########################################################################
+			      C 
+			      C ;; FIXED is a fixed point number (16 bit integer and 16 bit fractional components)
+			      C ;;    To convert a FIXED value in eax into an integer:  sar eax, 16
+			      C ;;    To convert an integer value in eax into a FIXED:  shl eax, 16
+			      C FIXED TYPEDEF DWORD
+			      C 
+			      C EXTERNDEF SINTAB:WORD 
+			      C 
+			      C FixedSin PROTO STDCALL dwAngle:FIXED 
+			      C FixedCos PROTO STDCALL dwAngle:FIXED
+			      C 
+			      C 
+			      C 
+			      C 
+			      C 
+
+ 00000000			.DATA
+
+				;;  These are some useful constants (fixed point values that correspond to important angles)
+ = 0001921F			PI_HALF = 102943           	;;  PI / 2
+ = 0003243F			PI =  205887	                ;;  PI 
+ = 0006487E			TWO_PI	= 411774                ;;  2 * PI 
+ = 00517CC1			PI_INC_RECIP =  5340353        	;;  256 / PI   (use this to find the table entry for a given angle
+					                        ;;              it is easier to use than divison would be)
+
+ 00000000			.CODE
+
+				;; Define the functions FixedSin and FixedCos
+				;; Since we have thoroughly covered defining functions in class, its up to you from here on out...
+				;; Remember to include the 'ret' instruction or your program will hang
+				;; Also, don't forget to set your return values
+					
+
+ 00000000			FixedSin PROC STDCALL USES ecx edx esi ebx dwAngle:FIXED
+				LOCAL myAngle:FIXED, piFlag:DWORD
+
+ 0000000A  8B 5D 08		mov ebx, dwAngle
+ 0000000D  89 5D FC		mov myAngle, ebx
+
+ 00000010  83 7D FC 00		cmp myAngle, 0
+ 00000014  7D 17		jge angles
+
+ 00000016  81 45 FC		add myAngle, TWO_PI
+	   0006487E
+				INVOKE FixedSin, myAngle
+				ret        
+
+ 0000002D			angles:
+
+ 0000002D  81 7D FC		    cmp myAngle, PI_HALF
+	   0001921F
+ 00000034  7C 56		    jl body
+
+ 00000036  81 7D FC		    cmp myAngle, PI_HALF
+	   0001921F
+ 0000003D  74 27		    je pi_half
+
+ 0000003F  81 7D FC		    cmp myAngle, PI
+	   0003243F
+ 00000046  7C 2E		    jl between
+				    
+ 00000048  B8 0003243F		    mov eax, PI
+ 0000004D  29 45 FC		    sub myAngle, eax
+				    INVOKE FixedSin, myAngle
+ 00000058  33 C9		    xor ecx, ecx
+ 0000005A  2B C8		    sub ecx, eax
+ 0000005C  8B C1		    mov eax, ecx
+				    ret
+
+
+ 00000066			pi_half:        ;; only actually applies when angle is exactly 0 for cosine
+ 00000066  B8 00000001		    mov eax, 1
+ 0000006B  C1 E0 10		    shl eax, 16
+				    ret
+
+ 00000076			between:
+ 00000076  B8 0003243F		    mov eax, PI
+ 0000007B  2B 45 FC		    sub eax, myAngle
+				    INVOKE FixedSin, eax 
+				    ret
+
+
+ 0000008C			body:
+
+ 0000008C  B8 00517CC1		    mov eax, PI_INC_RECIP
+ 00000091  F7 6D FC		    imul myAngle
+ 00000094  0F B7 04 55		    movzx eax, WORD PTR [SINTAB + 2 * edx]
+	   00000000 E
+				    ret
+				     
+ 000000A4			FixedSin ENDP
+
+ 000000A4			FixedCos PROC STDCALL dwAngle:FIXED
+ 000000A7  81 45 08		    add dwAngle, PI_HALF
+	   0001921F
+				    INVOKE FixedSin, dwAngle
+				    ret
+ 000000BA			FixedCos ENDP
+					
+				END
+Microsoft (R) Macro Assembler Version 6.14.8444		    03/13/14 01:10:39
+trig.asm						     Symbols 2 - 1
+
+
+
+
+Types:
+
+                N a m e                  Size     Attr
+
+FIXED  . . . . . . . . . . . . .	 00000004     DWord 
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+FLAT . . . . . . . . . . . . . .	GROUP
+STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
+_DATA  . . . . . . . . . . . . .	32 Bit	 00000000 Para	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 000000BA Para	  Public  'CODE'	
+
+
+Procedures,  parameters and locals:
+
+                N a m e                 Type     Value    Attr
+
+FixedCos . . . . . . . . . . . .	P Near	 000000A4 _TEXT	Length= 00000016 Public STDCALL
+  dwAngle  . . . . . . . . . . .	DWord	 bp + 00000008
+FixedSin . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 000000A4 Public STDCALL
+  dwAngle  . . . . . . . . . . .	DWord	 bp + 00000008
+  myAngle  . . . . . . . . . . .	DWord	 bp - 00000004
+  piFlag . . . . . . . . . . . .	DWord	 bp - 00000008
+  angles . . . . . . . . . . . .	L Near	 0000002D _TEXT	
+  pi_half  . . . . . . . . . . .	L Near	 00000066 _TEXT	
+  between  . . . . . . . . . . .	L Near	 00000076 _TEXT	
+  body . . . . . . . . . . . . .	L Near	 0000008C _TEXT	
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+@CodeSize  . . . . . . . . . . .	Number	 00000000h   
+@DataSize  . . . . . . . . . . .	Number	 00000000h   
+@Interface . . . . . . . . . . .	Number	 00000003h   
+@Model . . . . . . . . . . . . .	Number	 00000007h   
+@code  . . . . . . . . . . . . .	Text   	 _TEXT
+@data  . . . . . . . . . . . . .	Text   	 FLAT
+@fardata?  . . . . . . . . . . .	Text   	 FLAT
+@fardata . . . . . . . . . . . .	Text   	 FLAT
+@stack . . . . . . . . . . . . .	Text   	 FLAT
+PI_HALF  . . . . . . . . . . . .	Number	 0001921Fh   
+PI_INC_RECIP . . . . . . . . . .	Number	 00517CC1h   
+PI . . . . . . . . . . . . . . .	Number	 0003243Fh   
+SINTAB . . . . . . . . . . . . .	Word	 00000000 FLAT	External STDCALL
+TWO_PI . . . . . . . . . . . . .	Number	 0006487Eh   
+
+	   0 Warnings
+	   0 Errors

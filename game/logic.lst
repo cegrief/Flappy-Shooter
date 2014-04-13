@@ -1,0 +1,1383 @@
+Microsoft (R) Macro Assembler Version 6.14.8444		    03/13/14 01:10:39
+logic.asm						     Page 1 - 1
+
+
+				; #########################################################################
+				;
+				;   logic.asm - Assembly file for EECS205 Assignment 4/5
+				;
+				;
+				; #########################################################################
+
+				      .586
+				      .MODEL FLAT,STDCALL
+				      .STACK 4096
+				      option casemap :none  ; case sensitive
+				      
+				    include stars.inc	
+			      C ; #########################################################################
+			      C ;
+			      C ;   stars.inc - Includes for EECS205 Assignment 1
+			      C ;
+			      C ;
+			      C ; #########################################################################
+			      C 
+			      C 
+			      C DrawStarReg PROTO STDCALL ; Renders a star in the 2D drawing space
+			      C                         ; Uses register passed parameters:
+			      C                         ;      esi = x-coordinate
+			      C                         ;      edi = y-coordinate
+			      C 
+			      C DrawAllStars PROTO STDCALL ; Routine which uses DrawStarReg to create all the stars
+			      C 
+			      C EXTERNDEF STDCALL WinMain : NEAR
+			      C 
+				    include blit.inc
+			      C ; #########################################################################
+			      C ;
+			      C ;   blit.inc - Includes for EECS205 Assignment 2
+			      C ;
+			      C ;
+			      C ; #########################################################################
+			      C 
+			      C 
+ 00000010		      C _EECS205BITMAP STRUCT
+ 00000000  00000000	      C  dwWidth      DWORD  ?
+ 00000004  00000000	      C  dwHeight     DWORD  ?
+ 00000008  00		      C  bTransparent BYTE   ?
+ 00000009  00000003 [	      C               BYTE   3 DUP(?)
+	    00
+	   ]
+ 0000000C  00000000	      C  lpBytes      DWORD  ?
+			      C _EECS205BITMAP ENDS
+			      C 
+			      C EECS205BITMAP TYPEDEF _EECS205BITMAP
+			      C 
+			      C EXTERNDEF StarBitmap:EECS205BITMAP
+			      C EXTERNDEF dwPitch:DWORD
+			      C EXTERNDEF lpDisplayBits:DWORD
+			      C 
+			      C 
+			      C BlitReg PROTO STDCALL   ; Renders a bitmap to the 2D drawing space
+			      C                         ; Uses register passed parameters:
+			      C                         ;      esi = x-coordinate (of image center)
+			      C                         ;      edi = y-coordinate (of image center)
+			      C 			;      edx = pointer to the bitmap to draw
+			      C 
+			      C 
+			      C 
+				    include rotate.inc
+			      C ; #########################################################################
+			      C ;
+			      C ;   rotate.inc - Includes for EECS205 Assignment 3
+			      C ;
+			      C ;
+			      C ; #########################################################################
+			      C 
+			      C include blit.inc
+			      C ; #########################################################################
+			      C ;
+			      C ;   blit.inc - Includes for EECS205 Assignment 2
+			      C ;
+			      C ;
+			      C ; #########################################################################
+			      C 
+			      C 
+			      C _EECS205BITMAP STRUCT
+			      C  dwWidth      DWORD  ?
+			      C  dwHeight     DWORD  ?
+			      C  bTransparent BYTE   ?
+			      C               BYTE   3 DUP(?)
+			      C  lpBytes      DWORD  ?
+			      C _EECS205BITMAP ENDS
+			      C 
+			      C EECS205BITMAP TYPEDEF _EECS205BITMAP
+			      C 
+			      C EXTERNDEF StarBitmap:EECS205BITMAP
+			      C EXTERNDEF dwPitch:DWORD
+			      C EXTERNDEF lpDisplayBits:DWORD
+			      C 
+			      C 
+			      C BlitReg PROTO STDCALL   ; Renders a bitmap to the 2D drawing space
+			      C                         ; Uses register passed parameters:
+			      C                         ;      esi = x-coordinate (of image center)
+			      C                         ;      edi = y-coordinate (of image center)
+			      C 			;      edx = pointer to the bitmap to draw
+			      C 
+			      C 
+			      C 
+			      C 
+			      C BasicBlit PROTO STDCALL lpBmp:PTR EECS205BITMAP, xcenter:DWORD, ycenter:DWORD
+			      C 
+			      C RotateBlit PROTO STDCALL lpBmp:PTR EECS205BITMAP, xcenter:DWORD, ycenter:DWORD, angle:DWORD
+			      C 
+			      C FixedMul PROTO STDCALL x:DWORD, y:DWORD
+			      C 
+			      C 
+			      C 
+				    include game.inc
+			      C ; #########################################################################
+			      C ;
+			      C ;   game.inc - Includes for EECS205 Assignment 4/5
+			      C ;
+			      C ;
+			      C ; #########################################################################
+			      C 
+			      C ;; These are library routines that you will call (but do NOT have to implement)
+			      C BeginDraw PROTO
+			      C EndDraw PROTO
+			      C 
+			      C ;; You should not need to modify these prototypes (actually, it would probably be bad)
+			      C GameInit PROTO
+			      C GameMain PROTO mouseStatus:DWORD, keyDown:DWORD, keyUp:DWORD
+			      C 
+			      C ;; Useful Library Routines
+			      C DrawString PROTO x:DWORD, y:DWORD, string:PTR BYTE 
+			      C DrawInt PROTO x:DWORD, y:DWORD, value:DWORD
+			      C 
+			      C ;; Feel free to modify the following
+			      C GameRender PROTO
+			      C GameLogic PROTO xinc:DWORD, yinc:DWORD
+			      C RandomNum PROTO
+			      C CollisionCheck PROTO obj1:PTR Sprite, obj2:PTR Sprite, tol:DWORD
+			      C levelShift PROTO
+			      C 
+			      C EXTERNDEF lpTyroneBmp:DWORD
+			      C 
+ 00000024		      C Sprite STRUCT
+ 00000000  00000000	      C 	xPos DWORD ?
+ 00000004  00000000	      C 	yPos DWORD ?
+ 00000008  00000000	      C 	xPosFixed DWORD ?
+ 0000000C  00000000	      C 	yPosFixed	DWORD ?
+ 00000010  00000000	      C 	xVel DWORD ?
+ 00000014  00000000	      C 	yVel DWORD ?
+ 00000018  00000000	      C 	angle DWORD ?
+ 0000001C  00000000	      C 	visible DWORD ?
+ 00000020  00000000	      C         hp DWORD ?
+			      C Sprite ENDS
+			      C EXTERNDEF hpcost: DWORD
+			      C EXTERNDEF dmgcost: DWORD
+			      C EXTERNDEF spdcost: DWORD
+			      C EXTERNDEF upgradecount:DWORD
+			      C EXTERNDEF points:DWORD
+			      C EXTERNDEF level:Dword
+			      C EXTERNDEF mouseX:DWORD
+			      C EXTERNDEF mouseY:DWORD
+			      C EXTERNDEF BIRD: EECS205BITMAP
+			      C EXTERNDEF bird: Sprite
+			      C EXTERNDEF PIPE: EECS205BITMAP
+			      C EXTERNDEF pipe: Sprite
+			      C EXTERNDEF DOWNPIPE: EECS205BITMAP
+			      C EXTERNDEF downPipe: Sprite
+			      C EXTERNDEF poke: Sprite
+			      C EXTERNDEF POKE: EECS205BITMAP
+			      C EXTERNDEF abby: Sprite
+			      C EXTERNDEF ABBY: EECS205BITMAP
+			      C EXTERNDEF aa_j: EECS205BITMAP
+			      C EXTERNDEF zapdos: Sprite
+			      C EXTERNDEF atv: EECS205BITMAP
+			      C EXTERNDEF venomoth: Sprite
+			      C EXTERNDEF baby_helix: EECS205BITMAP
+			      C EXTERNDEF omanyte: Sprite
+			      C EXTERNDEF lord_helix: EECS205BITMAP
+			      C EXTERNDEF omastar: Sprite
+			      C EXTERNDEF ELECTRODE: EECS205BITMAP
+			      C EXTERNDEF electrode: Sprite
+			      C EXTERNDEF currHP: DWORD
+			      C EXTERNDEF pause: DWORD
+			      C EXTERNDEF gravity: DWORD
+			      C 
+				    include keys.inc
+			      C ;;
+			      C ;; keys.inc -- These are virtual key codes to
+			      C ;; captuer any keystrokes you desire
+			      C 
+ = 00000008		      C VK_BACK                              equ 8h
+ = 00000003		      C VK_CANCEL                            equ 3h
+ = 00000014		      C VK_CAPITAL                           equ 14h
+ = 0000000C		      C VK_CLEAR                             equ 0Ch
+ = 00000011		      C VK_CONTROL                           equ 11h
+ = 0000002E		      C VK_DELETE                            equ 2Eh
+ = 00000028		      C VK_DOWN                              equ 28h
+ = 00000023		      C VK_END                               equ 23h
+ = 0000001B		      C VK_ESCAPE                            equ 1Bh
+ = 0000002B		      C VK_EXECUTE                           equ 2Bh
+ = 0000002F		      C VK_HELP                              equ 2Fh
+ = 00000024		      C VK_HOME                              equ 24h
+ = 0000002D		      C VK_INSERT                            equ 2Dh
+ = 00000001		      C VK_LBUTTON                           equ 1h
+ = 00000025		      C VK_LEFT                              equ 25h
+ = 00000004		      C VK_MBUTTON                           equ 4h
+ = 00000012		      C VK_MENU                              equ 12h
+ = 00000022		      C VK_NEXT                              equ 22h
+ = 00000013		      C VK_PAUSE                             equ 13h
+ = 00000022		      C VK_PGDN                              equ 22h
+ = 00000021		      C VK_PGUP                              equ 21h
+ = 0000002A		      C VK_PRINT                             equ 2Ah
+ = 00000021		      C VK_PRIOR                             equ 21h
+ = 00000002		      C VK_RBUTTON                           equ 2h
+ = 0000000D		      C VK_RETURN                            equ 0Dh
+ = 00000027		      C VK_RIGHT                             equ 27h
+ = 00000029		      C VK_SELECT                            equ 29h
+ = 00000010		      C VK_SHIFT                             equ 10h
+ = 0000002C		      C VK_SNAPSHOT                          equ 2Ch
+ = 00000020		      C VK_SPACE                             equ 20h
+ = 00000009		      C VK_TAB                               equ 9h
+ = 00000026		      C VK_UP                                equ 26h
+ = 00000060		      C VK_NUMPAD0                           equ 60h
+ = 00000061		      C VK_NUMPAD1                           equ 61h
+ = 00000062		      C VK_NUMPAD2                           equ 62h
+ = 00000063		      C VK_NUMPAD3                           equ 63h
+ = 00000064		      C VK_NUMPAD4                           equ 64h
+ = 00000065		      C VK_NUMPAD5                           equ 65h
+ = 00000066		      C VK_NUMPAD6                           equ 66h
+ = 00000067		      C VK_NUMPAD7                           equ 67h
+ = 00000068		      C VK_NUMPAD8                           equ 68h
+ = 00000069		      C VK_NUMPAD9                           equ 69h
+ = 0000006A		      C VK_MULTIPLY                          equ 6Ah
+ = 0000006B		      C VK_ADD                               equ 6Bh
+ = 0000006C		      C VK_SEPARATOR                         equ 6Ch
+ = 0000006D		      C VK_SUBTRACT                          equ 6Dh
+ = 0000006E		      C VK_DECIMAL                           equ 6Eh
+ = 0000006F		      C VK_DIVIDE                            equ 6Fh
+ = 00000070		      C VK_F1                                equ 70h
+ = 00000071		      C VK_F2                                equ 71h
+ = 00000072		      C VK_F3                                equ 72h
+ = 00000073		      C VK_F4                                equ 73h
+ = 00000074		      C VK_F5                                equ 74h
+ = 00000075		      C VK_F6                                equ 75h
+ = 00000076		      C VK_F7                                equ 76h
+ = 00000077		      C VK_F8                                equ 77h
+ = 00000078		      C VK_F9                                equ 78h
+ = 00000079		      C VK_F10                               equ 79h
+ = 0000007A		      C VK_F11                               equ 7Ah
+ = 0000007B		      C VK_F12                               equ 7Bh
+ = 0000007C		      C VK_F13                               equ 7Ch
+ = 0000007D		      C VK_F14                               equ 7Dh
+ = 0000007E		      C VK_F15                               equ 7Eh
+ = 0000007F		      C VK_F16                               equ 7Fh
+ = 00000080		      C VK_F17                               equ 80h
+ = 00000081		      C VK_F18                               equ 81h
+ = 00000082		      C VK_F19                               equ 82h
+ = 00000083		      C VK_F20                               equ 83h
+ = 00000084		      C VK_F21                               equ 84h
+ = 00000085		      C VK_F22                               equ 85h
+ = 00000086		      C VK_F23                               equ 86h
+ = 00000087		      C VK_F24                               equ 87h
+ = 00000090		      C VK_NUMLOCK                           equ 90h
+ = 00000091		      C VK_SCROLL                            equ 91h
+ = 000000A0		      C VK_LSHIFT                            equ 0A0h
+ = 000000A1		      C VK_RSHIFT                            equ 0A1h
+ = 000000A2		      C VK_LCONTROL                          equ 0A2h
+ = 000000A3		      C VK_RCONTROL                          equ 0A3h
+ = 000000A4		      C VK_LMENU                             equ 0A4h
+ = 000000A5		      C VK_RMENU                             equ 0A5h
+ = 000000F6		      C VK_ATTN                              equ 0F6h
+ = 000000F7		      C VK_CRSEL                             equ 0F7h
+ = 000000F8		      C VK_EXSEL                             equ 0F8h
+ = 000000F9		      C VK_EREOF                             equ 0F9h
+ = 000000FA		      C VK_PLAY                              equ 0FAh
+ = 000000FB		      C VK_ZOOM                              equ 0FBh
+ = 000000FC		      C VK_NONAME                            equ 0FCh
+ = 000000FD		      C VK_PA1                               equ 0FDh
+ = 000000FE		      C VK_OEM_CLEAR                         equ 0FEh
+ = 00000030		      C VK_0						 equ 30h
+ = 00000031		      C VK_1						 equ 31h
+ = 00000032		      C VK_2						 equ 32h
+ = 00000033		      C VK_3						 equ 33h
+ = 00000034		      C VK_4						 equ 34h
+ = 00000035		      C VK_5						 equ 35h
+ = 00000036		      C VK_6						 equ 36h
+ = 00000037		      C VK_7						 equ 37h
+ = 00000038		      C VK_8						 equ 38h
+ = 00000039		      C VK_9						 equ 39h
+ = 00000041		      C VK_A						 equ 41h
+ = 00000042		      C VK_B						 equ 42h
+ = 00000043		      C VK_C						 equ 43h
+ = 00000044		      C VK_D						 equ 44h
+ = 00000045		      C VK_E						 equ 45h
+ = 00000046		      C VK_F						 equ 46h
+ = 00000047		      C VK_G						 equ 47h
+ = 00000048		      C VK_H						 equ 48h
+ = 00000049		      C VK_I						 equ 49h
+ = 0000004A		      C VK_J						 equ 4Ah
+ = 0000004B		      C VK_K						 equ 4Bh
+ = 0000004C		      C VK_L						 equ 4Ch
+ = 0000004D		      C VK_M						 equ 4Dh
+ = 0000004E		      C VK_N						 equ 4Eh
+ = 0000004F		      C VK_O						 equ 4Fh
+ = 00000050		      C VK_P						 equ 50h
+ = 00000051		      C VK_Q						 equ 51h
+ = 00000052		      C VK_R						 equ 52h
+ = 00000053		      C VK_S						 equ 53h
+ = 00000054		      C VK_T						 equ 54h
+ = 00000055		      C VK_U						 equ 55h
+ = 00000056		      C VK_V						 equ 56h
+ = 00000057		      C VK_W						 equ 57h
+ = 00000058		      C VK_X						 equ 58h
+ = 00000059		      C VK_Y						 equ 59h
+ = 0000005A		      C VK_Z						 equ 5Ah
+			      C 
+				    include trig.inc
+			      C ; #########################################################################
+			      C ;
+			      C ;   trig.inc - Includes for EECS205 Assignment 3
+			      C ;
+			      C ;
+			      C ; #########################################################################
+			      C 
+			      C ;; FIXED is a fixed point number (16 bit integer and 16 bit fractional components)
+			      C ;;    To convert a FIXED value in eax into an integer:  sar eax, 16
+			      C ;;    To convert an integer value in eax into a FIXED:  shl eax, 16
+			      C FIXED TYPEDEF DWORD
+			      C 
+			      C EXTERNDEF SINTAB:WORD 
+			      C 
+			      C FixedSin PROTO STDCALL dwAngle:FIXED 
+			      C FixedCos PROTO STDCALL dwAngle:FIXED
+			      C 
+			      C 
+			      C 
+			      C 
+			      C 
+
+					
+ 00000000			.DATA
+
+ 00000000 00000140		bird Sprite <320, 240, 20971520, 15728640, 0, 0, 0, 0, 10>
+	   000000F0
+	   01400000
+	   00F00000
+	   00000000
+	   00000000
+	   00000000
+	   00000000
+	   0000000A
+ 00000024 00000258		pipe Sprite <600, 100, ?, ?, ?, ?, 0, 0, 0>
+	   00000064
+	   00000000
+	   00000000
+	   00000000
+	   00000000
+	   00000000
+	   00000000
+	   00000000
+ 00000048 00000258		downPipe Sprite <600, 400, ?, ?, ?, ?, 0, 0, 0>
+	   00000190
+	   00000000
+	   00000000
+	   00000000
+	   00000000
+	   00000000
+	   00000000
+	   00000000
+ 0000006C 000003E8		poke Sprite<1000, 1000, ?, ?, 400000, ?, 0, 1, 100>
+	   000003E8
+	   00000000
+	   00000000
+	   00061A80
+	   00000000
+	   00000000
+	   00000001
+	   00000064
+ 00000090 000001F4		abby Sprite<500, 200, ?, ?, ?, ?, 0, 0, 1000>
+	   000000C8
+	   00000000
+	   00000000
+	   00000000
+	   00000000
+	   00000000
+	   00000000
+	   000003E8
+ 000000B4 000003E8		electrode Sprite<1000, 1000, ?, ?, ?, ?, 0, 1, 0>
+	   000003E8
+	   00000000
+	   00000000
+	   00000000
+	   00000000
+	   00000000
+	   00000001
+	   00000000
+ 000000D8 000003E8		zapdos Sprite<1000, 1000, ?, ?, ?, ?, 0, 1, 100000>
+	   000003E8
+	   00000000
+	   00000000
+	   00000000
+	   00000000
+	   00000000
+	   00000001
+	   000186A0
+ 000000FC 000003E8		venomoth Sprite<1000, 1000, ?, ?, ?, ?, 0, 1, 10000>
+	   000003E8
+	   00000000
+	   00000000
+	   00000000
+	   00000000
+	   00000000
+	   00000001
+	   00002710
+ 00000120 000003E8		omanyte Sprite<1000, 1000, ?, ?, ?, ?, 0, 1, 100000>
+	   000003E8
+	   00000000
+	   00000000
+	   00000000
+	   00000000
+	   00000000
+	   00000001
+	   000186A0
+ 00000144 000003E8		omastar Sprite<1000, 1000, ?, ?, ?, ?, 0, 1, 100000>
+	   000003E8
+	   00000000
+	   00000000
+	   00000000
+	   00000000
+	   00000000
+	   00000001
+	   000186A0
+ 00000168 00000000		currEnemy Sprite <?, ?, ?, ?, ?, ?, ?, ?, ?>
+	   00000000
+	   00000000
+	   00000000
+	   00000000
+	   00000000
+	   00000000
+	   00000000
+	   00000000
+
+ 0000018C 00000000		mouseX DWORD ?
+ 00000190 00000000		mouseY DWORD ?
+ 00000194 00000000		randomSeed DWORD ?
+ 00000198 00000001		level DWORD 1
+ 0000019C 47 61 6D 65 20	gameOverMessage BYTE "Game Over", 0
+	   4F 76 65 72 00
+ 000001A6 50 72 65 73 73	restartMessage BYTE "Press R to try again!", 0
+	   20 52 20 74 6F
+	   20 74 72 79 20
+	   61 67 61 69 6E
+	   21 00
+ 000001BC 47 6F 64 20 4D	godMessage BYTE "God Mode enabled", 0
+	   6F 64 65 20 65
+	   6E 61 62 6C 65
+	   64 00
+ 000001CD 00000000		godMode DWORD 0
+ 000001D1 0000EA60		gravity DWORD 60000
+
+ 00000000			.CODE
+
+				;; Define the function GameLogic
+				;; Since we have thoroughly covered defining functions in class, its up to you from here on out...
+
+				;;xinc is mouse status, yinc is keyboard status
+ 00000000			GameLogic PROC xinc:DWORD, yinc:DWORD
+
+ 00000003  83 7D 0C 47		cmp yinc, VK_G
+ 00000007  75 07		jne checkgodmode
+ 00000009  83 35 000001CD R	xor godMode, 1
+	   01
+
+
+
+ 00000010			checkgodmode:
+ 00000010  83 3D 000001CD R	cmp godMode, 1
+	   01
+ 00000017  75 4B		jne checkgameover
+				INVOKE DrawString, 250, 50, ADDR godMessage
+ 0000002A  C7 05 00000020 R	mov bird.hp, 99999999
+	   05F5E0FF
+ 00000034  C7 05 00000000 E	mov points, 99999999
+	   05F5E0FF
+ 0000003E  C7 05 0000008C R	mov poke.hp, 999999
+	   000F423F
+ 00000048  83 7D 0C 52		cmp yinc, VK_R
+ 0000004C  75 05		jne checklevelshift
+				INVOKE GameInit
+
+ 00000053			checklevelshift:
+ 00000053  83 7D 0C 4C		cmp yinc, VK_L
+ 00000057  75 0B		jne checkgameover
+ 00000059  FF 05 00000198 R	inc level
+				INVOKE levelShift
+
+ 00000064			checkgameover:
+ 00000064  83 3D 00000020 R	cmp bird.hp, 0
+	   00
+ 0000006B  7F 52		jg nogameover
+				INVOKE DrawString, 250, 175, ADDR gameOverMessage
+				INVOKE DrawString, 250, 200, ADDR restartMessage
+
+ 00000095  83 7D 0C 52		cmp yinc, VK_R
+ 00000099  75 05		jne endgameover
+				INVOKE GameInit
+
+ 000000A0			endgameover:
+
+ 000000A0  83 3D 00000034 R	cmp pipe.xVel, 0
+	   00
+ 000000A7  7D 16		jge nogameover
+ 000000A9  81 05 00000034 R	add pipe.xVel, 100000
+	   000186A0
+ 000000B3  81 05 00000058 R	add downPipe.xVel, 100000
+	   000186A0
+ 000000BD  EB 00		jmp nogameover
+
+ 000000BF			nogameover:
+
+ 000000BF  A1 00000034 R	mov eax, pipe.xVel
+ 000000C4  01 05 0000002C R	add pipe.xPosFixed, eax
+
+
+ 000000CA  A1 00000058 R	mov eax, downPipe.xVel
+ 000000CF  01 05 00000050 R	add downPipe.xPosFixed, eax
+
+ 000000D5  83 3D 00000048 R	cmp downPipe.xPos, 0
+	   00
+ 000000DC  0F 8D 00000085	jge flappy
+
+ 000000E2  C7 05 00000048 R	mov downPipe.xPos, 640
+	   00000280
+ 000000EC  BB 00000280		mov ebx, 640
+ 000000F1  C1 E3 10		shl ebx, 16
+ 000000F4  89 1D 00000050 R	mov downPipe.xPosFixed, ebx
+
+ 000000FA  BB FFFFFFB5		mov ebx, -75
+ 000000FF  C1 E3 10		shl ebx, 16
+ 00000102  89 1D 00000054 R	mov downPipe.yPosFixed, ebx
+
+ 00000108  C7 05 00000024 R	mov pipe.xPos, 640
+	   00000280
+ 00000112  BB 00000280		mov ebx, 640
+ 00000117  C1 E3 10		shl ebx, 16
+ 0000011A  89 1D 0000002C R	mov pipe.xPosFixed, ebx
+
+ 00000120  BB 000001F4		mov ebx, 500
+ 00000125  C1 E3 10		shl ebx, 16
+ 00000128  89 1D 00000030 R	mov pipe.yPosFixed, ebx
+ 0000012E  83 05 00000000 E	add points, 100
+	   64
+
+				INVOKE RandomNum
+ 0000013A  C1 F8 08		sar eax, 8
+ 0000013D  01 05 00000030 R	add pipe.yPosFixed, eax
+ 00000143  01 05 00000054 R	add downPipe.yPosFixed, eax
+ 00000149  8B 1D 00000030 R	mov ebx, pipe.yPosFixed
+ 0000014F  C1 EB 10		shr ebx, 16
+ 00000152  89 1D 00000028 R	mov pipe.yPos, ebx
+
+ 00000158  8B 1D 00000054 R	mov ebx, downPipe.yPosFixed
+ 0000015E  C1 EB 10		shr ebx, 16
+ 00000161  89 1D 0000004C R	mov downPipe.yPos, ebx
+
+
+
+ 00000167			flappy:
+
+ 00000167  83 3D 00000020 R	cmp bird.hp, 0
+	   00
+ 0000016E  7E 1A		jle nospace
+
+ 00000170  83 7D 0C 20		cmp yinc, VK_SPACE
+ 00000174  75 14		jne nospace
+
+ 00000176  C7 05 00000014 R	mov bird.yVel, 800000
+	   000C3500
+ 00000180  C7 05 00000018 R	mov bird.angle, 50000
+	   0000C350
+
+ 0000018A			nospace:
+
+ 0000018A  A1 00000014 R	mov eax, bird.yVel
+ 0000018F  29 05 0000000C R	sub bird.yPosFixed, eax
+ 00000195  A1 000001D1 R	mov eax, gravity
+ 0000019A  29 05 00000014 R	sub bird.yVel, eax
+
+ 000001A0  8B 0D 00000018 R	mov ecx, bird.angle
+ 000001A6  81 F9 FFFEDB08	cmp ecx, -75000
+ 000001AC  7E 0A		jle bottom
+ 000001AE  81 2D 00000018 R	sub bird.angle, 4000
+	   00000FA0
+
+ 000001B8			bottom:
+ 000001B8  8B 1D 0000000C R	mov ebx, bird.yPosFixed
+ 000001BE  C1 EB 10		shr ebx, 16
+ 000001C1  8B 1D 00000004 R	mov ebx, bird.yPos
+ 000001C7  81 3D 00000004 R	cmp bird.yPos, 420
+	   000001A4
+ 000001D1  7D 15		jge ground
+ 000001D3  83 3D 00000004 R	cmp bird.yPos, 0
+	   00
+ 000001DA  7D 20		jge birdCol
+
+ 000001DC  C7 05 0000000C R	mov bird.yPosFixed, 0
+	   00000000
+ 000001E6  EB 14		jmp birdCol
+
+ 000001E8			ground:
+ 000001E8  C7 05 00000014 R	mov bird.yVel, 0
+	   00000000
+ 000001F2  C7 05 00000020 R	mov bird.hp, 0
+	   00000000
+
+ 000001FC			birdCol:            ;;check if the bird has hit a pipe
+
+ 000001FC  A1 00000000 R	mov eax, bird.xPos
+ 00000201  83 C0 32		add eax, 50
+
+ 00000204  8B 1D 00000004 R	mov ebx, bird.yPos
+ 0000020A  81 C3 000000DC	add ebx, 220
+
+ 00000210  39 05 00000024 R	cmp pipe.xPos, eax
+ 00000216  7F 2C		jg birdnocol
+
+ 00000218  83 E8 64		sub eax, 100
+ 0000021B  39 05 00000024 R	cmp pipe.xPos, eax
+ 00000221  7C 21		jl birdnocol
+
+ 00000223  39 1D 00000028 R	cmp pipe.yPos, ebx
+ 00000229  7C 0E		jl birdcollide
+
+ 0000022B  81 EB 000001B8	sub ebx, 440
+
+ 00000231  39 1D 0000004C R	cmp downPipe.yPos, ebx
+ 00000237  7C 0B		jl birdnocol
+
+ 00000239			birdcollide:
+
+ 00000239  A1 00000198 R	mov eax, level
+ 0000023E  29 05 00000020 R	sub bird.hp, eax
+
+ 00000244			birdnocol:
+
+ 00000244			pokeball:
+ 00000244  83 3D 00000088 R	cmp poke.visible, 0
+	   00
+ 0000024B  74 41		je movPoke
+
+ 0000024D  83 3D 00000020 R	cmp bird.hp, 0
+	   00
+ 00000254  74 62		je pokeOnScreen
+
+ 00000256  83 65 08 02		and xinc, 2       
+ 0000025A  83 7D 08 00		cmp xinc, 0         ;;check if the mouse button is clicked
+ 0000025E  74 58		je pokeOnScreen
+
+
+ 00000260  C7 05 00000088 R	mov poke.visible, 0
+	   00000000
+				;;mov poke.xVel, 2000000
+ 0000026A  8B 1D 00000008 R	mov ebx, bird.xPosFixed
+ 00000270  89 1D 00000074 R	mov poke.xPosFixed, ebx
+ 00000276  81 05 00000074 R	add poke.xPosFixed, 100000
+	   000186A0
+ 00000280  8B 1D 0000000C R	mov ebx, bird.yPosFixed
+ 00000286  89 1D 00000078 R	mov poke.yPosFixed, ebx 
+
+ 0000028C  EB 2A		jmp pokeOnScreen
+
+ 0000028E			movPoke:
+
+ 0000028E  A1 0000007C R	mov eax, poke.xVel
+ 00000293  01 05 00000074 R	add poke.xPosFixed, eax
+
+ 00000299  83 3D 00000074 R	cmp poke.xPosFixed, 0
+	   00
+ 000002A0  7C 0C		jl pokeoff
+ 000002A2  81 3D 00000074 R	cmp poke.xPosFixed, 41943040
+	   02800000
+ 000002AC  7E 0A		jle pokeOnScreen
+
+ 000002AE			pokeoff:
+ 000002AE  C7 05 00000088 R	mov poke.visible, 1
+	   00000001
+
+ 000002B8			pokeOnScreen:
+
+ 000002B8  83 3D 000000AC R	cmp abby.visible, 0 ;;abby
+	   00
+ 000002BF  0F 85 000000E8	jne endabby
+
+ 000002C5  A1 000000A4 R	mov eax, abby.yVel
+ 000002CA  01 05 0000009C R	add abby.yPosFixed, eax
+
+ 000002D0  8B 1D 0000009C R	mov ebx, abby.yPosFixed
+ 000002D6  C1 EB 10		shr ebx, 16
+ 000002D9  89 1D 00000094 R	mov abby.yPos, ebx
+ 000002DF  81 3D 00000094 R	cmp abby.yPos, 420
+	   000001A4
+ 000002E9  7D 09		jge abbybounds
+ 000002EB  83 3D 00000094 R	cmp abby.yPos, 0
+	   00
+ 000002F2  7F 0D		jg abbyColCheck
+
+ 000002F4			abbybounds:
+ 000002F4  33 C0		xor eax, eax
+ 000002F6  2B 05 000000A4 R	sub eax, abby.yVel
+ 000002FC  A3 000000A4 R	mov abby.yVel, eax
+
+ 00000301			abbyColCheck: ;;check if a pokeball has hit abby
+
+ 00000301  33 C0		xor eax, eax
+				INVOKE CollisionCheck, ADDR poke, ADDR abby, 45
+ 00000314  83 F8 01		cmp eax, 1
+ 00000317  75 76		jne abbynocollision
+
+
+ 00000319  8B 1D 00000074 R	mov ebx, poke.xPosFixed
+ 0000031F  8B 0D 00000078 R	mov ecx, poke.yPosFixed
+ 00000325  89 1D 000000BC R	mov electrode.xPosFixed, ebx
+ 0000032B  89 0D 000000C0 R	mov electrode.yPosFixed, ecx
+ 00000331  C7 05 000000D4 R	mov electrode.hp, 20
+	   00000014
+ 0000033B  C7 05 000000D0 R	mov electrode.visible, 0
+	   00000000
+
+ 00000345  C7 05 00000074 R	mov poke.xPosFixed, 500000000 ;;offscreen to be able to shoot again
+	   1DCD6500
+ 0000034F  C7 05 00000078 R	mov poke.yPosFixed, 500000000 ;;offscreen to be able to shoot again
+	   1DCD6500
+ 00000359  C7 05 0000006C R	mov poke.xPos, 1000
+	   000003E8
+ 00000363  C7 05 00000070 R	mov poke.yPos, 1000
+	   000003E8
+ 0000036D  C7 05 00000088 R	mov poke.visible, 1
+	   00000001
+ 00000377  8B 1D 0000008C R	mov ebx, poke.hp
+ 0000037D  29 1D 000000B0 R	sub abby.hp, ebx
+ 00000383  29 1D 00000000 E	sub currHP, ebx
+ 00000389  01 1D 00000000 E	add points, ebx
+
+ 0000038F			abbynocollision:
+ 0000038F  83 3D 000000B0 R	cmp abby.hp, 0
+	   00
+ 00000396  7F 15		jg endabby
+ 00000398  C7 05 000000AC R	mov abby.visible, 1
+	   00000001
+ 000003A2  FF 05 00000198 R	inc level
+				INVOKE levelShift
+
+ 000003AD			endabby:
+
+ 000003AD  83 3D 00000118 R	cmp venomoth.visible, 0 ;;venomoth
+	   00
+ 000003B4  0F 85 000000E8	jne endvenomoth
+
+ 000003BA  A1 00000110 R	mov eax, venomoth.yVel
+ 000003BF  01 05 00000108 R	add venomoth.yPosFixed, eax
+
+ 000003C5  8B 1D 00000108 R	mov ebx, venomoth.yPosFixed
+ 000003CB  C1 EB 10		shr ebx, 16
+ 000003CE  89 1D 00000100 R	mov venomoth.yPos, ebx
+ 000003D4  81 3D 00000100 R	cmp venomoth.yPos, 420
+	   000001A4
+ 000003DE  7D 09		jge venomothbounds
+ 000003E0  83 3D 00000100 R	cmp venomoth.yPos, 0
+	   00
+ 000003E7  7F 0D		jg venomothColCheck
+
+ 000003E9			venomothbounds:
+ 000003E9  33 C0		xor eax, eax
+ 000003EB  2B 05 00000110 R	sub eax, venomoth.yVel
+ 000003F1  A3 00000110 R	mov venomoth.yVel, eax
+
+ 000003F6			venomothColCheck: ;;check if a pokeball has hit venomoth
+
+ 000003F6  33 C0		xor eax, eax
+				INVOKE CollisionCheck, ADDR poke, ADDR venomoth, 70
+ 00000409  83 F8 01		cmp eax, 1
+ 0000040C  75 76		jne venomothnocollision
+
+
+ 0000040E  8B 1D 00000074 R	mov ebx, poke.xPosFixed
+ 00000414  8B 0D 00000078 R	mov ecx, poke.yPosFixed
+ 0000041A  89 1D 000000BC R	mov electrode.xPosFixed, ebx
+ 00000420  89 0D 000000C0 R	mov electrode.yPosFixed, ecx
+ 00000426  C7 05 000000D4 R	mov electrode.hp, 20
+	   00000014
+ 00000430  C7 05 000000D0 R	mov electrode.visible, 0
+	   00000000
+
+ 0000043A  C7 05 00000074 R	mov poke.xPosFixed, 500000000 ;;offscreen to be able to shoot again
+	   1DCD6500
+ 00000444  C7 05 00000078 R	mov poke.yPosFixed, 500000000 ;;offscreen to be able to shoot again
+	   1DCD6500
+ 0000044E  C7 05 0000006C R	mov poke.xPos, 1000
+	   000003E8
+ 00000458  C7 05 00000070 R	mov poke.yPos, 1000
+	   000003E8
+ 00000462  C7 05 00000088 R	mov poke.visible, 1
+	   00000001
+ 0000046C  8B 1D 0000008C R	mov ebx, poke.hp
+ 00000472  29 1D 0000011C R	sub venomoth.hp, ebx
+ 00000478  29 1D 00000000 E	sub currHP, ebx
+ 0000047E  01 1D 00000000 E	add points, ebx
+
+ 00000484			venomothnocollision:
+ 00000484  83 3D 0000011C R	cmp venomoth.hp, 0
+	   00
+ 0000048B  7F 15		jg endvenomoth
+ 0000048D  C7 05 00000118 R	mov venomoth.visible, 1
+	   00000001
+ 00000497  FF 05 00000198 R	inc level
+				INVOKE levelShift
+
+ 000004A2			endvenomoth:
+
+ 000004A2  83 3D 0000013C R	cmp omanyte.visible, 0 ;;omanyte
+	   00
+ 000004A9  0F 85 000000E8	jne endomanyte
+
+ 000004AF  A1 00000134 R	mov eax, omanyte.yVel
+ 000004B4  01 05 0000012C R	add omanyte.yPosFixed, eax
+
+ 000004BA  8B 1D 0000012C R	mov ebx, omanyte.yPosFixed
+ 000004C0  C1 EB 10		shr ebx, 16
+ 000004C3  89 1D 00000124 R	mov omanyte.yPos, ebx
+ 000004C9  81 3D 00000124 R	cmp omanyte.yPos, 420
+	   000001A4
+ 000004D3  7D 09		jge omanytebounds
+ 000004D5  83 3D 00000124 R	cmp omanyte.yPos, 0
+	   00
+ 000004DC  7F 0D		jg omanyteColCheck
+
+ 000004DE			omanytebounds:
+ 000004DE  33 C0		xor eax, eax
+ 000004E0  2B 05 00000134 R	sub eax, omanyte.yVel
+ 000004E6  A3 00000134 R	mov omanyte.yVel, eax
+
+ 000004EB			omanyteColCheck: ;;check if a pokeball has hit omanyte
+
+ 000004EB  33 C0		xor eax, eax
+				INVOKE CollisionCheck, ADDR poke, ADDR omanyte, 70
+ 000004FE  83 F8 01		cmp eax, 1
+ 00000501  75 76		jne omanytenocollision
+
+
+ 00000503  8B 1D 00000074 R	mov ebx, poke.xPosFixed
+ 00000509  8B 0D 00000078 R	mov ecx, poke.yPosFixed
+ 0000050F  89 1D 000000BC R	mov electrode.xPosFixed, ebx
+ 00000515  89 0D 000000C0 R	mov electrode.yPosFixed, ecx
+ 0000051B  C7 05 000000D4 R	mov electrode.hp, 20
+	   00000014
+ 00000525  C7 05 000000D0 R	mov electrode.visible, 0
+	   00000000
+
+ 0000052F  C7 05 00000074 R	mov poke.xPosFixed, 500000000 ;;offscreen to be able to shoot again
+	   1DCD6500
+ 00000539  C7 05 00000078 R	mov poke.yPosFixed, 500000000 ;;offscreen to be able to shoot again
+	   1DCD6500
+ 00000543  C7 05 0000006C R	mov poke.xPos, 1000
+	   000003E8
+ 0000054D  C7 05 00000070 R	mov poke.yPos, 1000
+	   000003E8
+ 00000557  C7 05 00000088 R	mov poke.visible, 1
+	   00000001
+ 00000561  8B 1D 0000008C R	mov ebx, poke.hp
+ 00000567  29 1D 00000140 R	sub omanyte.hp, ebx
+ 0000056D  29 1D 00000000 E	sub currHP, ebx
+ 00000573  01 1D 00000000 E	add points, ebx
+
+ 00000579			omanytenocollision:
+ 00000579  83 3D 00000140 R	cmp omanyte.hp, 0
+	   00
+ 00000580  7F 15		jg endomanyte
+ 00000582  C7 05 0000013C R	mov omanyte.visible, 1
+	   00000001
+ 0000058C  FF 05 00000198 R	inc level
+				INVOKE levelShift
+
+ 00000597			endomanyte:
+
+ 00000597  83 3D 000000F4 R	cmp zapdos.visible, 0 ;;zapdos
+	   00
+ 0000059E  0F 85 000000E8	jne endzapdos
+
+ 000005A4  A1 000000EC R	mov eax, zapdos.yVel
+ 000005A9  01 05 000000E4 R	add zapdos.yPosFixed, eax
+
+ 000005AF  8B 1D 000000E4 R	mov ebx, zapdos.yPosFixed
+ 000005B5  C1 EB 10		shr ebx, 16
+ 000005B8  89 1D 000000DC R	mov zapdos.yPos, ebx
+ 000005BE  81 3D 000000DC R	cmp zapdos.yPos, 420
+	   000001A4
+ 000005C8  7D 09		jge zapdosbounds
+ 000005CA  83 3D 000000DC R	cmp zapdos.yPos, 0
+	   00
+ 000005D1  7F 0D		jg zapdosColCheck
+
+ 000005D3			zapdosbounds:
+ 000005D3  33 C0		xor eax, eax
+ 000005D5  2B 05 000000EC R	sub eax, zapdos.yVel
+ 000005DB  A3 000000EC R	mov zapdos.yVel, eax
+
+ 000005E0			zapdosColCheck: ;;check if a pokeball has hit zapdos
+
+ 000005E0  33 C0		xor eax, eax
+				INVOKE CollisionCheck, ADDR poke, ADDR zapdos, 120
+ 000005F3  83 F8 01		cmp eax, 1
+ 000005F6  75 76		jne zapdosnocollision
+
+
+ 000005F8  8B 1D 00000074 R	mov ebx, poke.xPosFixed
+ 000005FE  8B 0D 00000078 R	mov ecx, poke.yPosFixed
+ 00000604  89 1D 000000BC R	mov electrode.xPosFixed, ebx
+ 0000060A  89 0D 000000C0 R	mov electrode.yPosFixed, ecx
+ 00000610  C7 05 000000D4 R	mov electrode.hp, 20
+	   00000014
+ 0000061A  C7 05 000000D0 R	mov electrode.visible, 0
+	   00000000
+
+ 00000624  C7 05 00000074 R	mov poke.xPosFixed, 500000000 ;;offscreen to be able to shoot again
+	   1DCD6500
+ 0000062E  C7 05 00000078 R	mov poke.yPosFixed, 500000000 ;;offscreen to be able to shoot again
+	   1DCD6500
+ 00000638  C7 05 0000006C R	mov poke.xPos, 1000
+	   000003E8
+ 00000642  C7 05 00000070 R	mov poke.yPos, 1000
+	   000003E8
+ 0000064C  C7 05 00000088 R	mov poke.visible, 1
+	   00000001
+ 00000656  8B 1D 0000008C R	mov ebx, poke.hp
+ 0000065C  29 1D 000000F8 R	sub zapdos.hp, ebx
+ 00000662  29 1D 00000000 E	sub currHP, ebx
+ 00000668  01 1D 00000000 E	add points, ebx
+
+ 0000066E			zapdosnocollision:
+ 0000066E  83 3D 000000F8 R	cmp zapdos.hp, 0
+	   00
+ 00000675  7F 15		jg endzapdos
+ 00000677  C7 05 000000F4 R	mov zapdos.visible, 1
+	   00000001
+ 00000681  FF 05 00000198 R	inc level
+				INVOKE levelShift
+
+ 0000068C			endzapdos:
+ 0000068C  83 3D 00000160 R	cmp omastar.visible, 0 ;;omastar
+	   00
+ 00000693  0F 85 000000EB	jne endomastar
+
+ 00000699  A1 00000158 R	mov eax, omastar.yVel
+ 0000069E  01 05 00000150 R	add omastar.yPosFixed, eax
+
+ 000006A4  8B 1D 00000150 R	mov ebx, omastar.yPosFixed
+ 000006AA  C1 EB 10		shr ebx, 16
+ 000006AD  89 1D 00000148 R	mov omastar.yPos, ebx
+ 000006B3  81 3D 00000148 R	cmp omastar.yPos, 420
+	   000001A4
+ 000006BD  7D 09		jge omastarbounds
+ 000006BF  83 3D 00000148 R	cmp omastar.yPos, 0
+	   00
+ 000006C6  7F 0D		jg omastarColCheck
+
+ 000006C8			omastarbounds:
+ 000006C8  33 C0		xor eax, eax
+ 000006CA  2B 05 00000158 R	sub eax, omastar.yVel
+ 000006D0  A3 00000158 R	mov omastar.yVel, eax
+
+ 000006D5			omastarColCheck: ;;check if a pokeball has hit omastar
+
+ 000006D5  33 C0		xor eax, eax
+				INVOKE CollisionCheck, ADDR poke, ADDR omastar, 150
+ 000006EB  83 F8 01		cmp eax, 1
+ 000006EE  75 76		jne omastarnocollision
+
+
+ 000006F0  8B 1D 00000074 R	mov ebx, poke.xPosFixed
+ 000006F6  8B 0D 00000078 R	mov ecx, poke.yPosFixed
+ 000006FC  89 1D 000000BC R	mov electrode.xPosFixed, ebx
+ 00000702  89 0D 000000C0 R	mov electrode.yPosFixed, ecx
+ 00000708  C7 05 000000D4 R	mov electrode.hp, 20
+	   00000014
+ 00000712  C7 05 000000D0 R	mov electrode.visible, 0
+	   00000000
+
+ 0000071C  C7 05 00000074 R	mov poke.xPosFixed, 500000000 ;;offscreen to be able to shoot again
+	   1DCD6500
+ 00000726  C7 05 00000078 R	mov poke.yPosFixed, 500000000 ;;offscreen to be able to shoot again
+	   1DCD6500
+ 00000730  C7 05 0000006C R	mov poke.xPos, 1000
+	   000003E8
+ 0000073A  C7 05 00000070 R	mov poke.yPos, 1000
+	   000003E8
+ 00000744  C7 05 00000088 R	mov poke.visible, 1
+	   00000001
+ 0000074E  8B 1D 0000008C R	mov ebx, poke.hp
+ 00000754  29 1D 00000164 R	sub omastar.hp, ebx
+ 0000075A  29 1D 00000000 E	sub currHP, ebx
+ 00000760  01 1D 00000000 E	add points, ebx
+
+ 00000766			omastarnocollision:
+ 00000766  83 3D 00000164 R	cmp omastar.hp, 0
+	   00
+ 0000076D  7F 15		jg endomastar
+ 0000076F  C7 05 00000160 R	mov omastar.visible, 1
+	   00000001
+ 00000779  FF 05 00000198 R	inc level
+				INVOKE levelShift
+
+ 00000784			endomastar:
+
+
+ 00000784  83 3D 000000D4 R	cmp electrode.hp, 0
+	   00
+ 0000078B  7F 0C		jg keepexploding
+ 0000078D  C7 05 000000D0 R	mov electrode.visible, 1
+	   00000001
+ 00000797  EB 07		jmp endlogic
+
+
+ 00000799			keepexploding:
+ 00000799  83 2D 000000D4 R	sub electrode.hp, 1
+	   01
+
+ 000007A0			endlogic:
+				ret
+
+ 000007A4			GameLogic ENDP
+
+ 000007A4			CollisionCheck PROC USES esi edi edx, obj1:PTR Sprite, obj2:PTR Sprite, tol:DWORD
+ 000007AA  8B 75 08		mov esi, obj1
+ 000007AD  8B 7D 0C		mov edi, obj2
+
+ 000007B0  8B 06		mov eax, (Sprite PTR [esi]).xPos
+ 000007B2  2B 07		sub eax, (Sprite PTR [edi]).xPos
+ 000007B4  83 F8 00		cmp eax, 0
+ 000007B7  7F 02		jg checkY
+ 000007B9  F7 D0		not eax
+
+ 000007BB			checkY:
+ 000007BB  8B 56 04		mov edx, (Sprite PTR [esi]).yPos
+ 000007BE  2B 57 04		sub edx, (Sprite PTR [edi]).yPos
+ 000007C1  83 FA 00		cmp edx, 0
+ 000007C4  7F 02		jg checkTol
+ 000007C6  F7 D2		not edx
+
+ 000007C8			checkTol:
+ 000007C8  03 C2		add eax, edx
+ 000007CA  3B 45 10		cmp eax, tol
+ 000007CD  7F 07		jg nocollision
+
+ 000007CF  B8 00000001		mov eax, 1
+ 000007D4  EB 05		jmp return
+
+ 000007D6			nocollision:
+ 000007D6  B8 00000000		mov eax, 0
+
+ 000007DB			return:
+
+				ret
+ 000007E2			CollisionCheck ENDP
+
+
+ 000007E2			RandomNum PROC
+ 000007E2  A1 00000194 R	mov eax, randomSeed
+ 000007E7  83 C0 01		add eax, 1
+ 000007EA  C1 C8 03		ror eax, 3
+ 000007ED  05 F3A14C44		add eax, 0f3a14c44h
+ 000007F2  C1 C0 11		rol eax, 17
+ 000007F5  05 0000034A		add eax, 034ah
+ 000007FA  A3 00000194 R	mov randomSeed, eax
+ 000007FF  C3			ret
+ 00000800			RandomNum ENDP
+
+				END
+Microsoft (R) Macro Assembler Version 6.14.8444		    03/13/14 01:10:39
+logic.asm						     Symbols 2 - 1
+
+
+
+
+Structures and Unions:
+
+                N a m e                  Size
+                                         Offset      Type
+
+Sprite . . . . . . . . . . . . .	 00000024
+  xPos . . . . . . . . . . . . .	 00000000	 DWord
+  yPos . . . . . . . . . . . . .	 00000004	 DWord
+  xPosFixed  . . . . . . . . . .	 00000008	 DWord
+  yPosFixed  . . . . . . . . . .	 0000000C	 DWord
+  xVel . . . . . . . . . . . . .	 00000010	 DWord
+  yVel . . . . . . . . . . . . .	 00000014	 DWord
+  angle  . . . . . . . . . . . .	 00000018	 DWord
+  visible  . . . . . . . . . . .	 0000001C	 DWord
+  hp . . . . . . . . . . . . . .	 00000020	 DWord
+_EECS205BITMAP . . . . . . . . .	 00000010
+  dwWidth  . . . . . . . . . . .	 00000000	 DWord
+  dwHeight . . . . . . . . . . .	 00000004	 DWord
+  bTransparent . . . . . . . . .	 00000008	 Byte
+  lpBytes  . . . . . . . . . . .	 0000000C	 DWord
+
+
+Types:
+
+                N a m e                  Size     Attr
+
+EECS205BITMAP  . . . . . . . . .	 00000010     _EECS205BITMAP 
+FIXED  . . . . . . . . . . . . .	 00000004     DWord 
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+FLAT . . . . . . . . . . . . . .	GROUP
+STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
+_DATA  . . . . . . . . . . . . .	32 Bit	 000001D5 Para	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 00000800 Para	  Public  'CODE'	
+
+
+Procedures,  parameters and locals:
+
+                N a m e                 Type     Value    Attr
+
+BasicBlit  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+BeginDraw  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+BlitReg  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+CollisionCheck . . . . . . . . .	P Near	 000007A4 _TEXT	Length= 0000003E Public STDCALL
+  obj1 . . . . . . . . . . . . .	DWord	 bp + 00000008
+  obj2 . . . . . . . . . . . . .	DWord	 bp + 0000000C
+  tol  . . . . . . . . . . . . .	DWord	 bp + 00000010
+  checkY . . . . . . . . . . . .	L Near	 000007BB _TEXT	
+  checkTol . . . . . . . . . . .	L Near	 000007C8 _TEXT	
+  nocollision  . . . . . . . . .	L Near	 000007D6 _TEXT	
+  return . . . . . . . . . . . .	L Near	 000007DB _TEXT	
+DrawAllStars . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+DrawInt  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+DrawStarReg  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+DrawString . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+EndDraw  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+FixedCos . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+FixedMul . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+FixedSin . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GameInit . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GameLogic  . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 000007A4 Public STDCALL
+  xinc . . . . . . . . . . . . .	DWord	 bp + 00000008
+  yinc . . . . . . . . . . . . .	DWord	 bp + 0000000C
+  checkgodmode . . . . . . . . .	L Near	 00000010 _TEXT	
+  checklevelshift  . . . . . . .	L Near	 00000053 _TEXT	
+  checkgameover  . . . . . . . .	L Near	 00000064 _TEXT	
+  endgameover  . . . . . . . . .	L Near	 000000A0 _TEXT	
+  nogameover . . . . . . . . . .	L Near	 000000BF _TEXT	
+  flappy . . . . . . . . . . . .	L Near	 00000167 _TEXT	
+  nospace  . . . . . . . . . . .	L Near	 0000018A _TEXT	
+  bottom . . . . . . . . . . . .	L Near	 000001B8 _TEXT	
+  ground . . . . . . . . . . . .	L Near	 000001E8 _TEXT	
+  birdCol  . . . . . . . . . . .	L Near	 000001FC _TEXT	
+  birdcollide  . . . . . . . . .	L Near	 00000239 _TEXT	
+  birdnocol  . . . . . . . . . .	L Near	 00000244 _TEXT	
+  pokeball . . . . . . . . . . .	L Near	 00000244 _TEXT	
+  movPoke  . . . . . . . . . . .	L Near	 0000028E _TEXT	
+  pokeoff  . . . . . . . . . . .	L Near	 000002AE _TEXT	
+  pokeOnScreen . . . . . . . . .	L Near	 000002B8 _TEXT	
+  abbybounds . . . . . . . . . .	L Near	 000002F4 _TEXT	
+  abbyColCheck . . . . . . . . .	L Near	 00000301 _TEXT	
+  abbynocollision  . . . . . . .	L Near	 0000038F _TEXT	
+  endabby  . . . . . . . . . . .	L Near	 000003AD _TEXT	
+  venomothbounds . . . . . . . .	L Near	 000003E9 _TEXT	
+  venomothColCheck . . . . . . .	L Near	 000003F6 _TEXT	
+  venomothnocollision  . . . . .	L Near	 00000484 _TEXT	
+  endvenomoth  . . . . . . . . .	L Near	 000004A2 _TEXT	
+  omanytebounds  . . . . . . . .	L Near	 000004DE _TEXT	
+  omanyteColCheck  . . . . . . .	L Near	 000004EB _TEXT	
+  omanytenocollision . . . . . .	L Near	 00000579 _TEXT	
+  endomanyte . . . . . . . . . .	L Near	 00000597 _TEXT	
+  zapdosbounds . . . . . . . . .	L Near	 000005D3 _TEXT	
+  zapdosColCheck . . . . . . . .	L Near	 000005E0 _TEXT	
+  zapdosnocollision  . . . . . .	L Near	 0000066E _TEXT	
+  endzapdos  . . . . . . . . . .	L Near	 0000068C _TEXT	
+  omastarbounds  . . . . . . . .	L Near	 000006C8 _TEXT	
+  omastarColCheck  . . . . . . .	L Near	 000006D5 _TEXT	
+  omastarnocollision . . . . . .	L Near	 00000766 _TEXT	
+  endomastar . . . . . . . . . .	L Near	 00000784 _TEXT	
+  keepexploding  . . . . . . . .	L Near	 00000799 _TEXT	
+  endlogic . . . . . . . . . . .	L Near	 000007A0 _TEXT	
+GameMain . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GameRender . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+RandomNum  . . . . . . . . . . .	P Near	 000007E2 _TEXT	Length= 0000001E Public STDCALL
+RotateBlit . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+levelShift . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+@CodeSize  . . . . . . . . . . .	Number	 00000000h   
+@DataSize  . . . . . . . . . . .	Number	 00000000h   
+@Interface . . . . . . . . . . .	Number	 00000003h   
+@Model . . . . . . . . . . . . .	Number	 00000007h   
+@code  . . . . . . . . . . . . .	Text   	 _TEXT
+@data  . . . . . . . . . . . . .	Text   	 FLAT
+@fardata?  . . . . . . . . . . .	Text   	 FLAT
+@fardata . . . . . . . . . . . .	Text   	 FLAT
+@stack . . . . . . . . . . . . .	Text   	 FLAT
+ABBY . . . . . . . . . . . . . .	_EECS205BITMAP  00000000 FLAT	External STDCALL
+BIRD . . . . . . . . . . . . . .	_EECS205BITMAP  00000000 FLAT	External STDCALL
+DOWNPIPE . . . . . . . . . . . .	_EECS205BITMAP  00000000 FLAT	External STDCALL
+ELECTRODE  . . . . . . . . . . .	_EECS205BITMAP  00000000 FLAT	External STDCALL
+PIPE . . . . . . . . . . . . . .	_EECS205BITMAP  00000000 FLAT	External STDCALL
+POKE . . . . . . . . . . . . . .	_EECS205BITMAP  00000000 FLAT	External STDCALL
+SINTAB . . . . . . . . . . . . .	Word	 00000000 FLAT	External STDCALL
+StarBitmap . . . . . . . . . . .	_EECS205BITMAP  00000000 FLAT	External STDCALL
+VK_0 . . . . . . . . . . . . . .	Number	 00000030h   
+VK_1 . . . . . . . . . . . . . .	Number	 00000031h   
+VK_2 . . . . . . . . . . . . . .	Number	 00000032h   
+VK_3 . . . . . . . . . . . . . .	Number	 00000033h   
+VK_4 . . . . . . . . . . . . . .	Number	 00000034h   
+VK_5 . . . . . . . . . . . . . .	Number	 00000035h   
+VK_6 . . . . . . . . . . . . . .	Number	 00000036h   
+VK_7 . . . . . . . . . . . . . .	Number	 00000037h   
+VK_8 . . . . . . . . . . . . . .	Number	 00000038h   
+VK_9 . . . . . . . . . . . . . .	Number	 00000039h   
+VK_ADD . . . . . . . . . . . . .	Number	 0000006Bh   
+VK_ATTN  . . . . . . . . . . . .	Number	 000000F6h   
+VK_A . . . . . . . . . . . . . .	Number	 00000041h   
+VK_BACK  . . . . . . . . . . . .	Number	 00000008h   
+VK_B . . . . . . . . . . . . . .	Number	 00000042h   
+VK_CANCEL  . . . . . . . . . . .	Number	 00000003h   
+VK_CAPITAL . . . . . . . . . . .	Number	 00000014h   
+VK_CLEAR . . . . . . . . . . . .	Number	 0000000Ch   
+VK_CONTROL . . . . . . . . . . .	Number	 00000011h   
+VK_CRSEL . . . . . . . . . . . .	Number	 000000F7h   
+VK_C . . . . . . . . . . . . . .	Number	 00000043h   
+VK_DECIMAL . . . . . . . . . . .	Number	 0000006Eh   
+VK_DELETE  . . . . . . . . . . .	Number	 0000002Eh   
+VK_DIVIDE  . . . . . . . . . . .	Number	 0000006Fh   
+VK_DOWN  . . . . . . . . . . . .	Number	 00000028h   
+VK_D . . . . . . . . . . . . . .	Number	 00000044h   
+VK_END . . . . . . . . . . . . .	Number	 00000023h   
+VK_EREOF . . . . . . . . . . . .	Number	 000000F9h   
+VK_ESCAPE  . . . . . . . . . . .	Number	 0000001Bh   
+VK_EXECUTE . . . . . . . . . . .	Number	 0000002Bh   
+VK_EXSEL . . . . . . . . . . . .	Number	 000000F8h   
+VK_E . . . . . . . . . . . . . .	Number	 00000045h   
+VK_F10 . . . . . . . . . . . . .	Number	 00000079h   
+VK_F11 . . . . . . . . . . . . .	Number	 0000007Ah   
+VK_F12 . . . . . . . . . . . . .	Number	 0000007Bh   
+VK_F13 . . . . . . . . . . . . .	Number	 0000007Ch   
+VK_F14 . . . . . . . . . . . . .	Number	 0000007Dh   
+VK_F15 . . . . . . . . . . . . .	Number	 0000007Eh   
+VK_F16 . . . . . . . . . . . . .	Number	 0000007Fh   
+VK_F17 . . . . . . . . . . . . .	Number	 00000080h   
+VK_F18 . . . . . . . . . . . . .	Number	 00000081h   
+VK_F19 . . . . . . . . . . . . .	Number	 00000082h   
+VK_F1  . . . . . . . . . . . . .	Number	 00000070h   
+VK_F20 . . . . . . . . . . . . .	Number	 00000083h   
+VK_F21 . . . . . . . . . . . . .	Number	 00000084h   
+VK_F22 . . . . . . . . . . . . .	Number	 00000085h   
+VK_F23 . . . . . . . . . . . . .	Number	 00000086h   
+VK_F24 . . . . . . . . . . . . .	Number	 00000087h   
+VK_F2  . . . . . . . . . . . . .	Number	 00000071h   
+VK_F3  . . . . . . . . . . . . .	Number	 00000072h   
+VK_F4  . . . . . . . . . . . . .	Number	 00000073h   
+VK_F5  . . . . . . . . . . . . .	Number	 00000074h   
+VK_F6  . . . . . . . . . . . . .	Number	 00000075h   
+VK_F7  . . . . . . . . . . . . .	Number	 00000076h   
+VK_F8  . . . . . . . . . . . . .	Number	 00000077h   
+VK_F9  . . . . . . . . . . . . .	Number	 00000078h   
+VK_F . . . . . . . . . . . . . .	Number	 00000046h   
+VK_G . . . . . . . . . . . . . .	Number	 00000047h   
+VK_HELP  . . . . . . . . . . . .	Number	 0000002Fh   
+VK_HOME  . . . . . . . . . . . .	Number	 00000024h   
+VK_H . . . . . . . . . . . . . .	Number	 00000048h   
+VK_INSERT  . . . . . . . . . . .	Number	 0000002Dh   
+VK_I . . . . . . . . . . . . . .	Number	 00000049h   
+VK_J . . . . . . . . . . . . . .	Number	 0000004Ah   
+VK_K . . . . . . . . . . . . . .	Number	 0000004Bh   
+VK_LBUTTON . . . . . . . . . . .	Number	 00000001h   
+VK_LCONTROL  . . . . . . . . . .	Number	 000000A2h   
+VK_LEFT  . . . . . . . . . . . .	Number	 00000025h   
+VK_LMENU . . . . . . . . . . . .	Number	 000000A4h   
+VK_LSHIFT  . . . . . . . . . . .	Number	 000000A0h   
+VK_L . . . . . . . . . . . . . .	Number	 0000004Ch   
+VK_MBUTTON . . . . . . . . . . .	Number	 00000004h   
+VK_MENU  . . . . . . . . . . . .	Number	 00000012h   
+VK_MULTIPLY  . . . . . . . . . .	Number	 0000006Ah   
+VK_M . . . . . . . . . . . . . .	Number	 0000004Dh   
+VK_NEXT  . . . . . . . . . . . .	Number	 00000022h   
+VK_NONAME  . . . . . . . . . . .	Number	 000000FCh   
+VK_NUMLOCK . . . . . . . . . . .	Number	 00000090h   
+VK_NUMPAD0 . . . . . . . . . . .	Number	 00000060h   
+VK_NUMPAD1 . . . . . . . . . . .	Number	 00000061h   
+VK_NUMPAD2 . . . . . . . . . . .	Number	 00000062h   
+VK_NUMPAD3 . . . . . . . . . . .	Number	 00000063h   
+VK_NUMPAD4 . . . . . . . . . . .	Number	 00000064h   
+VK_NUMPAD5 . . . . . . . . . . .	Number	 00000065h   
+VK_NUMPAD6 . . . . . . . . . . .	Number	 00000066h   
+VK_NUMPAD7 . . . . . . . . . . .	Number	 00000067h   
+VK_NUMPAD8 . . . . . . . . . . .	Number	 00000068h   
+VK_NUMPAD9 . . . . . . . . . . .	Number	 00000069h   
+VK_N . . . . . . . . . . . . . .	Number	 0000004Eh   
+VK_OEM_CLEAR . . . . . . . . . .	Number	 000000FEh   
+VK_O . . . . . . . . . . . . . .	Number	 0000004Fh   
+VK_PA1 . . . . . . . . . . . . .	Number	 000000FDh   
+VK_PAUSE . . . . . . . . . . . .	Number	 00000013h   
+VK_PGDN  . . . . . . . . . . . .	Number	 00000022h   
+VK_PGUP  . . . . . . . . . . . .	Number	 00000021h   
+VK_PLAY  . . . . . . . . . . . .	Number	 000000FAh   
+VK_PRINT . . . . . . . . . . . .	Number	 0000002Ah   
+VK_PRIOR . . . . . . . . . . . .	Number	 00000021h   
+VK_P . . . . . . . . . . . . . .	Number	 00000050h   
+VK_Q . . . . . . . . . . . . . .	Number	 00000051h   
+VK_RBUTTON . . . . . . . . . . .	Number	 00000002h   
+VK_RCONTROL  . . . . . . . . . .	Number	 000000A3h   
+VK_RETURN  . . . . . . . . . . .	Number	 0000000Dh   
+VK_RIGHT . . . . . . . . . . . .	Number	 00000027h   
+VK_RMENU . . . . . . . . . . . .	Number	 000000A5h   
+VK_RSHIFT  . . . . . . . . . . .	Number	 000000A1h   
+VK_R . . . . . . . . . . . . . .	Number	 00000052h   
+VK_SCROLL  . . . . . . . . . . .	Number	 00000091h   
+VK_SELECT  . . . . . . . . . . .	Number	 00000029h   
+VK_SEPARATOR . . . . . . . . . .	Number	 0000006Ch   
+VK_SHIFT . . . . . . . . . . . .	Number	 00000010h   
+VK_SNAPSHOT  . . . . . . . . . .	Number	 0000002Ch   
+VK_SPACE . . . . . . . . . . . .	Number	 00000020h   
+VK_SUBTRACT  . . . . . . . . . .	Number	 0000006Dh   
+VK_S . . . . . . . . . . . . . .	Number	 00000053h   
+VK_TAB . . . . . . . . . . . . .	Number	 00000009h   
+VK_T . . . . . . . . . . . . . .	Number	 00000054h   
+VK_UP  . . . . . . . . . . . . .	Number	 00000026h   
+VK_U . . . . . . . . . . . . . .	Number	 00000055h   
+VK_V . . . . . . . . . . . . . .	Number	 00000056h   
+VK_W . . . . . . . . . . . . . .	Number	 00000057h   
+VK_X . . . . . . . . . . . . . .	Number	 00000058h   
+VK_Y . . . . . . . . . . . . . .	Number	 00000059h   
+VK_ZOOM  . . . . . . . . . . . .	Number	 000000FBh   
+VK_Z . . . . . . . . . . . . . .	Number	 0000005Ah   
+WinMain  . . . . . . . . . . . .	L Near	 00000000 FLAT	External STDCALL
+aa_j . . . . . . . . . . . . . .	_EECS205BITMAP  00000000 FLAT	External STDCALL
+abby . . . . . . . . . . . . . .	Sprite	 00000090 _DATA	Public STDCALL
+atv  . . . . . . . . . . . . . .	_EECS205BITMAP  00000000 FLAT	External STDCALL
+baby_helix . . . . . . . . . . .	_EECS205BITMAP  00000000 FLAT	External STDCALL
+bird . . . . . . . . . . . . . .	Sprite	 00000000 _DATA	Public STDCALL
+currEnemy  . . . . . . . . . . .	Sprite	 00000168 _DATA	
+currHP . . . . . . . . . . . . .	DWord	 00000000 FLAT	External STDCALL
+dmgcost  . . . . . . . . . . . .	DWord	 00000000 FLAT	External STDCALL
+downPipe . . . . . . . . . . . .	Sprite	 00000048 _DATA	Public STDCALL
+dwPitch  . . . . . . . . . . . .	DWord	 00000000 FLAT	External STDCALL
+electrode  . . . . . . . . . . .	Sprite	 000000B4 _DATA	Public STDCALL
+gameOverMessage  . . . . . . . .	Byte	 0000019C _DATA	
+godMessage . . . . . . . . . . .	Byte	 000001BC _DATA	
+godMode  . . . . . . . . . . . .	DWord	 000001CD _DATA	
+gravity  . . . . . . . . . . . .	DWord	 000001D1 _DATA	Public STDCALL
+hpcost . . . . . . . . . . . . .	DWord	 00000000 FLAT	External STDCALL
+level  . . . . . . . . . . . . .	DWord	 00000198 _DATA	Public STDCALL
+lord_helix . . . . . . . . . . .	_EECS205BITMAP  00000000 FLAT	External STDCALL
+lpDisplayBits  . . . . . . . . .	DWord	 00000000 FLAT	External STDCALL
+lpTyroneBmp  . . . . . . . . . .	DWord	 00000000 FLAT	External STDCALL
+mouseX . . . . . . . . . . . . .	DWord	 0000018C _DATA	Public STDCALL
+mouseY . . . . . . . . . . . . .	DWord	 00000190 _DATA	Public STDCALL
+omanyte  . . . . . . . . . . . .	Sprite	 00000120 _DATA	Public STDCALL
+omastar  . . . . . . . . . . . .	Sprite	 00000144 _DATA	Public STDCALL
+pause  . . . . . . . . . . . . .	DWord	 00000000 FLAT	External STDCALL
+pipe . . . . . . . . . . . . . .	Sprite	 00000024 _DATA	Public STDCALL
+points . . . . . . . . . . . . .	DWord	 00000000 FLAT	External STDCALL
+poke . . . . . . . . . . . . . .	Sprite	 0000006C _DATA	Public STDCALL
+randomSeed . . . . . . . . . . .	DWord	 00000194 _DATA	
+restartMessage . . . . . . . . .	Byte	 000001A6 _DATA	
+spdcost  . . . . . . . . . . . .	DWord	 00000000 FLAT	External STDCALL
+upgradecount . . . . . . . . . .	DWord	 00000000 FLAT	External STDCALL
+venomoth . . . . . . . . . . . .	Sprite	 000000FC _DATA	Public STDCALL
+zapdos . . . . . . . . . . . . .	Sprite	 000000D8 _DATA	Public STDCALL
+
+	   0 Warnings
+	   0 Errors
